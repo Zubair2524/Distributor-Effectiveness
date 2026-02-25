@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaigan Pharma — Distribution Effectiveness Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#070c14; --bg2:#0d1520; --bg3:#111d2e;
+  --card:#0f1c2e; --card2:#132033;
+  --border:#1e3050; --border2:#2a4570;
+  --text:#e8f4ff; --text2:#8aadcc; --text3:#4a7090;
+  --shadow:0 8px 32px rgba(0,0,0,0.6);
+  --accent:#00d4ff; --accent2:#0099cc;
+  --green:#00e5a0; --orange:#ff9500; --red:#ff4757; --purple:#a855f7; --yellow:#ffd43b;
+}
+body.theme-medium {
+  --bg:#eef2f7; --bg2:#e2e8f2; --bg3:#d5dde9;
+  --card:#ffffff; --card2:#f5f8fc;
+  --border:#c5d0e0; --border2:#a0b2cc;
+  --text:#1a2a40; --text2:#3a5070; --text3:#7a96b0;
+  --shadow:0 4px 20px rgba(0,0,0,0.1);
+  --accent:#0070cc; --accent2:#0055aa;
+  --green:#00a870; --orange:#e07000; --red:#cc2233; --purple:#7733cc;
+}
+body.theme-light {
+  --bg:#f8fafc; --bg2:#f0f4f8; --bg3:#e8edf4;
+  --card:#ffffff; --card2:#f5f8fc;
+  --border:#dde4ee; --border2:#c0cce0;
+  --text:#0d1a2a; --text2:#2a4060; --text3:#6080a0;
+  --shadow:0 2px 12px rgba(0,0,0,0.07);
+  --accent:#0060bb; --accent2:#0044aa;
+  --green:#008855; --orange:#cc6600; --red:#bb1122; --purple:#6622bb;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 10%,rgba(0,100,200,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,180,255,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body.theme-light::before,body.theme-medium::before{background:none;}
+
+/* HEADER */
+header{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow);}
+.hdr{display:flex;align-items:center;justify-content:space-between;height:58px;max-width:1700px;margin:0 auto;}
+.logo{display:flex;align-items:center;gap:11px;}
+.logo-icon{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;font-family:'Syne',sans-serif;overflow:hidden;flex-shrink:0;background:transparent;}.logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:9px;}
+.logo-text{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);}
+.logo-sub{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;}
+.hdr-right{display:flex;gap:7px;align-items:center;}
+.btn{padding:7px 13px;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;transition:all 0.2s;white-space:nowrap;}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--bg3);color:var(--text);border-color:var(--border2);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,160,220,0.4);}
+.btn-danger{background:rgba(255,71,87,0.12);color:var(--red);border:1px solid rgba(255,71,87,0.3);}
+.btn-warn{background:rgba(255,149,0,0.12);color:var(--orange);border:1px solid rgba(255,149,0,0.3);}
+.badge-live{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);font-size:10px;font-family:'DM Mono',monospace;color:var(--green);}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
+
+/* GLOBAL FILTER BAR */
+.gfbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:58px;z-index:190;}
+.gfbar-inner{display:flex;align-items:center;gap:9px;max-width:1700px;margin:0 auto;height:48px;overflow-x:auto;}
+.gf-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;flex-shrink:0;}
+.gf-sel{background:var(--card);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;padding:6px 10px;outline:none;cursor:pointer;transition:border-color 0.2s;}
+.gf-sel:hover,.gf-sel:focus{border-color:var(--accent);}
+.af-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:rgba(0,212,255,0.1);border:1px solid var(--accent);border-radius:20px;font-size:10px;color:var(--accent);font-family:'DM Mono',monospace;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.af-badge:hover{background:rgba(0,212,255,0.2);}
+.gf-div{width:1px;height:22px;background:var(--border);flex-shrink:0;}
+
+/* TABS */
+.tabsbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;}
+.tabsbar-inner{display:flex;max-width:1700px;margin:0 auto;}
+.tab-btn{padding:12px 16px;border:none;background:transparent;color:var(--text3);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab-btn:hover{color:var(--text2);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAIN */
+.main{max-width:1700px;margin:0 auto;padding:18px 24px;position:relative;z-index:1;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px;}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;position:relative;overflow:hidden;transition:all 0.2s;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.blue::before{background:linear-gradient(90deg,var(--accent),transparent);}
+.kpi-card.green::before{background:linear-gradient(90deg,var(--green),transparent);}
+.kpi-card.orange::before{background:linear-gradient(90deg,var(--orange),transparent);}
+.kpi-card.red::before{background:linear-gradient(90deg,var(--red),transparent);}
+.kpi-card.purple::before{background:linear-gradient(90deg,var(--purple),transparent);}
+.kpi-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.kpi-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;margin-bottom:7px;}
+.kpi-val{font-size:24px;font-weight:700;font-family:'Syne',sans-serif;line-height:1.1;}
+.kpi-val.blue{color:var(--accent);}.kpi-val.green{color:var(--green);}.kpi-val.orange{color:var(--orange);}.kpi-val.red{color:var(--red);}.kpi-val.purple{color:var(--purple);}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:4px;}
+.kpi-ico{position:absolute;right:12px;top:12px;font-size:18px;opacity:0.2;}
+
+/* LAYOUT */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px;}
+@media(max-width:1100px){.g2,.g3{grid-template-columns:1fr;}}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;}
+.chart-wrap{position:relative;height:240px;}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px;}
+.sec-title::before{content:'';width:3px;height:14px;background:var(--accent);border-radius:2px;flex-shrink:0;}
+
+/* PROGRESS */
+.pw{background:var(--bg3);border-radius:100px;height:5px;overflow:hidden;}
+.pb{height:100%;border-radius:100px;transition:width 0.8s;}
+.pb.high{background:linear-gradient(90deg,var(--green),#00ff88);}
+.pb.mid{background:linear-gradient(90deg,var(--orange),#ffb300);}
+.pb.low{background:linear-gradient(90deg,var(--red),#ff6b6b);}
+
+/* TABLE */
+.twrap{overflow-x:auto;border-radius:11px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--bg3);}
+thead th{padding:10px 13px;text-align:left;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--accent);}
+tbody tr{border-bottom:1px solid rgba(30,48,80,0.35);transition:background 0.12s;}
+tbody tr:hover{background:rgba(0,180,255,0.04);}
+tbody tr:last-child{border-bottom:none;}
+td{padding:9px 13px;font-size:12px;color:var(--text2);vertical-align:middle;}
+td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospace;font-size:11px;}
+
+/* CHIPS */
+.chip{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;font-family:'DM Mono',monospace;white-space:nowrap;}
+.chip.ok{background:rgba(0,229,160,0.1);color:var(--green);border:1px solid rgba(0,229,160,0.25);}
+.chip.warn{background:rgba(255,149,0,0.1);color:var(--orange);border:1px solid rgba(255,149,0,0.25);}
+.chip.danger{background:rgba(255,71,87,0.1);color:var(--red);border:1px solid rgba(255,71,87,0.25);}
+.chip.info{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.25);}
+.chip.grey{background:rgba(100,130,160,0.08);color:var(--text3);border:1px solid var(--border);}
+.chip.click{cursor:pointer;transition:all 0.2s;}.chip.click:hover{transform:scale(1.05);}
+
+/* SEARCH/SELECT */
+.srch,.selc{background:var(--card2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;padding:7px 10px;outline:none;transition:border-color 0.2s;}
+.srch:focus,.selc:focus{border-color:var(--accent);}
+.srch{min-width:170px;}
+.fbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+
+/* DIST CARDS */
+.dcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;transition:all 0.22s;cursor:pointer;overflow:hidden;}
+.dcard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow);}
+.dcard.sel{border-color:var(--accent);background:rgba(0,212,255,0.03);}
+.dcard-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.dname{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.dteam{font-size:9px;color:var(--text3);margin-top:2px;}
+.damount{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--orange);}
+.dlbl{font-size:9px;color:var(--text3);}
+.dmet{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:8px;}
+.dmet-v{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;text-align:center;}
+.dmet-l{font-size:9px;color:var(--text3);margin-top:1px;text-align:center;}
+
+/* TEAM PILLS */
+.tprow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.tpill{padding:4px 11px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;background:var(--bg3);border:1px solid var(--border);color:var(--text3);cursor:pointer;transition:all 0.18s;}
+.tpill:hover{border-color:var(--accent);color:var(--accent);}
+.tpill.active{background:rgba(0,212,255,0.12);border-color:var(--accent);color:var(--accent);font-weight:600;}
+
+/* DONUT */
+.donut-wrap{position:relative;width:140px;height:140px;flex-shrink:0;}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.dpct{font-size:22px;font-weight:700;font-family:'Syne',sans-serif;}
+.dlbl2{font-size:8px;color:var(--text3);font-family:'DM Mono',monospace;}
+.sumrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+
+/* TAB PAGES */
+.tab-page{display:none;}.tab-page.active{display:block;}
+
+/* MODAL */
+.movl{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.76);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.movl.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:15px;padding:26px;min-width:460px;max-width:700px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.7);animation:mIn 0.22s ease;max-height:92vh;overflow-y:auto;}
+@keyframes mIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+.mtitle{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:2px;color:var(--text);}
+.msub{font-size:11px;color:var(--text3);margin-bottom:18px;}
+.mclose{float:right;background:none;border:none;color:var(--text3);cursor:pointer;font-size:17px;transition:color 0.2s;}.mclose:hover{color:var(--red);}
+.fg{margin-bottom:12px;}
+.flbl{display:block;font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;font-family:'DM Mono',monospace;}
+.finp{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;padding:8px 11px;outline:none;transition:border-color 0.2s;}
+.finp:focus{border-color:var(--accent);}
+.dropz{border:2px dashed var(--border2);border-radius:11px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(0,212,255,0.015);}
+.dropz:hover,.dropz.drag{border-color:var(--accent);background:rgba(0,212,255,0.06);}
+.dropico{font-size:26px;margin-bottom:5px;}
+.droptxt{color:var(--text2);font-size:12px;}
+.dropsub{color:var(--text3);font-size:10px;margin-top:3px;}
+.radio-g{display:flex;gap:9px;flex-wrap:wrap;margin-top:5px;}
+.radio-o{display:flex;align-items:center;gap:5px;cursor:pointer;padding:6px 11px;border-radius:7px;border:1px solid var(--border);transition:all 0.2s;font-size:12px;}
+.radio-o input{accent-color:var(--accent);}
+.radio-o:has(input:checked){border-color:var(--accent);background:rgba(0,212,255,0.08);color:var(--accent);}
+.msg{padding:8px 11px;border-radius:7px;font-size:11px;margin-top:9px;}
+.msg.success{background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.25);color:var(--green);}
+.msg.error{background:rgba(255,71,87,0.08);border:1px solid rgba(255,71,87,0.25);color:var(--red);}
+.msg.info{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);color:var(--accent);}
+.tagrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+.tag{padding:2px 7px;border-radius:4px;font-size:9px;font-family:'DM Mono',monospace;background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
+/* file queue */
+.fqueue{max-height:150px;overflow-y:auto;margin-top:9px;border:1px solid var(--border);border-radius:7px;padding:5px;}
+.fitem{display:flex;align-items:center;padding:4px 7px;border-radius:5px;font-size:10px;color:var(--text2);}
+.fitem:hover{background:var(--bg3);}
+.fname{font-family:'DM Mono',monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fsz{color:var(--text3);margin:0 7px;}
+.frm{cursor:pointer;color:var(--red);opacity:0.7;font-size:13px;padding:0 3px;}.frm:hover{opacity:1;}
+.uprog{width:0%;height:4px;background:var(--accent);border-radius:2px;transition:width 0.3s;}
+
+/* ADMIN */
+.adm-g{display:grid;grid-template-columns:210px 1fr;gap:14px;}
+.adm-sb{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px;}
+.adm-mi{padding:8px 11px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;transition:all 0.18s;margin-bottom:3px;}
+.adm-mi:hover{background:var(--bg2);color:var(--text);}
+.adm-mi.active{background:rgba(0,212,255,0.1);color:var(--accent);}
+.adm-c{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:18px;}
+.adm-ttl{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);}
+.tog-wrap{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.tog{position:relative;width:40px;height:21px;}
+.tog input{opacity:0;width:0;height:0;}
+.stog{position:absolute;cursor:pointer;inset:0;background:var(--bg);border-radius:21px;transition:0.2s;border:1px solid var(--border);}
+.stog::before{content:'';position:absolute;width:13px;height:13px;border-radius:50%;left:3px;bottom:3px;background:var(--text3);transition:0.2s;}
+.tog input:checked+.stog{background:rgba(0,212,255,0.18);border-color:var(--accent);}
+.tog input:checked+.stog::before{transform:translateX(19px);background:var(--accent);}
+.csw{width:28px;height:28px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;}
+.csw:hover{border-color:var(--text);}
+.crow{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;}
+/* Theme swatches */
+.tsw{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:7px;border-radius:9px;border:2px solid var(--border);transition:all 0.2s;min-width:75px;}
+.tsw:hover{border-color:var(--accent);}
+.tsw.active{border-color:var(--accent);background:rgba(0,212,255,0.08);}
+.tsw-prev{width:55px;height:32px;border-radius:5px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:3px;}
+.tsb{border-radius:2px;}
+.tsw-lbl{font-size:9px;font-family:'DM Mono',monospace;color:var(--text3);}
+
+/* PAGINATION */
+.pgn{display:flex;gap:4px;align-items:center;justify-content:flex-end;margin-top:9px;}
+.pgb{width:28px;height:28px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:11px;transition:all 0.18s;display:flex;align-items:center;justify-content:center;}
+.pgb:hover,.pgb.active{background:rgba(0,212,255,0.1);border-color:var(--accent);color:var(--accent);}
+.pgb:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* NOTIF */
+#notif{position:fixed;top:70px;right:18px;z-index:3000;padding:9px 16px;border-radius:9px;font-size:12px;background:var(--green);color:#000;font-weight:700;transform:translateX(160%);transition:transform 0.3s;box-shadow:0 6px 20px rgba(0,200,130,0.4);}
+#notif.show{transform:translateX(0);}
+#notif.err{background:var(--red);box-shadow:0 6px 20px rgba(255,71,87,0.4);}
+
+/* EMPTY */
+.empty{text-align:center;padding:45px 20px;}
+.empty-ico{font-size:36px;margin-bottom:10px;opacity:0.25;}
+.empty-txt{color:var(--text3);font-size:12px;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+.wm{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;padding:9px 0;text-align:center;border-top:1px solid var(--border);margin-top:22px;}
+</style>
+</head>
+<body id="body-root">
+<div id="notif">✓</div>
+
+<!-- HEADER -->
+<header>
+<div class="hdr">
+  <div class="logo">
+    <div class="logo-icon" id="logo-ico"><img id="logo-img" src="data:image/png;base64,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" alt="Shaigan"></div>
+    <div>
+      <div class="logo-text" id="logo-text">Shaigan Pharma</div>
+      <div class="logo-sub" id="logo-sub">Distribution Effectiveness Monitor</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="badge-live"><div class="dot-live"></div><span id="hdr-date">—</span></div>
+    <button class="btn btn-ghost" onclick="openUpload()">⬆ Upload Data</button>
+    <button class="btn btn-warn" onclick="openAdmin()">⚙ Admin</button>
+    <button class="btn btn-primary" onclick="dlFmt()">⬇ Format</button>
+  </div>
+</div>
+</header>
+
+<!-- GLOBAL FILTER BAR -->
+<div class="gfbar">
+<div class="gfbar-inner">
+  <span class="gf-label">🔍 Filter:</span>
+  <select class="gf-sel" id="gf-team" onchange="applyGF()"><option value="">All Teams</option></select>
+  <select class="gf-sel" id="gf-dist" onchange="applyGF()"><option value="">All Distributors</option></select>
+  <select class="gf-sel" id="gf-prod" onchange="applyGF()" style="min-width:200px;max-width:260px;"><option value="">All Products</option></select>
+  <div class="gf-div"></div>
+  <div id="af-tags" style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap;"></div>
+  <button class="btn btn-ghost" id="clear-gf" onclick="clearGF()" style="font-size:10px;padding:3px 9px;display:none;">✕ Clear All</button>
+</div>
+</div>
+
+<!-- TABS -->
+<div class="tabsbar">
+<div class="tabsbar-inner">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">📊 Overview</button>
+  <button class="tab-btn" onclick="switchTab('distributors',this)">🏢 Distributors</button>
+  <button class="tab-btn" onclick="switchTab('slow',this)">🐢 Slow-Moving</button>
+  <button class="tab-btn" onclick="switchTab('replenishment',this)">🔄 Replenishment Due</button>
+  <button class="tab-btn" onclick="switchTab('analytics',this)">📈 Analytics</button>
+</div>
+</div>
+
+<div class="main">
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="tab-page active">
+  <div class="kpi-grid">
+    <div class="kpi-card blue"><div class="kpi-ico">📦</div><div class="kpi-lbl">Planned (60-Day Target)</div><div class="kpi-val blue" id="kpi-p">—</div><div class="kpi-sub">Units</div></div>
+    <div class="kpi-card green"><div class="kpi-ico">✅</div><div class="kpi-lbl">Actual Invoiced</div><div class="kpi-val green" id="kpi-i">—</div><div class="kpi-sub">Units invoiced</div></div>
+    <div class="kpi-card orange"><div class="kpi-ico">⚡</div><div class="kpi-lbl">Replenishment %</div><div class="kpi-val orange" id="kpi-r">—</div><div class="kpi-sub">Planned vs Actual</div></div>
+    <div class="kpi-card red"><div class="kpi-ico">⚠️</div><div class="kpi-lbl">Total Due Amount</div><div class="kpi-val red" id="kpi-d">—</div><div class="kpi-sub">PKR value of gap</div></div>
+    <div class="kpi-card purple"><div class="kpi-ico">🐌</div><div class="kpi-lbl">Slow-Moving SKUs</div><div class="kpi-val purple" id="kpi-s">—</div><div class="kpi-sub">Stock &gt; 2× avg</div></div>
+  </div>
+  <div class="g2">
+    <div class="panel">
+      <div class="sec-hdr"><div class="sec-title">Overall Replenishment Status</div><div id="ov-badges"></div></div>
+      <div class="sumrow">
+        <div class="donut-wrap"><canvas id="donutC" width="140" height="140"></canvas><div class="donut-center"><div class="dpct" id="dpct">—</div><div class="dlbl2">ACHIEVED</div></div></div>
+        <div style="flex:1;min-width:150px;">
+          <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--text2)">Planned</span><span class="mono" id="sp" style="color:var(--accent)">—</span></div><div class="pw"><div class="pb high" style="width:100%"></div></div></div>
+          <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--text2)">Invoiced</span><span class="mono" id="si" style="color:var(--green)">—</span></div><div class="pw"><div class="pb" id="ab" style="width:0%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--text2)">Gap</span><span class="mono" id="sg" style="color:var(--red)">—</span></div><div class="pw"><div class="pb low" id="gb" style="width:0%"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="sec-hdr"><div class="sec-title">Team Achievement</div><span style="font-size:10px;color:var(--text3)">Click team pill or bar to filter</span></div>
+      <div class="tprow" id="team-pills"></div>
+      <div class="chart-wrap" style="height:185px;"><canvas id="teamC"></canvas></div>
+    </div>
+  </div>
+  <div class="sec-hdr"><div class="sec-title">Distributor Quick-View</div><span style="font-size:10px;color:var(--text3)">Click any row to filter all tabs</span></div>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Distributor</th><th>Planned</th><th>Invoiced</th><th>Replenishment %</th><th>Due Value (PKR)</th><th>Slow SKUs</th><th>Status</th></tr></thead>
+      <tbody id="mini-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DISTRIBUTORS -->
+<div id="tab-distributors" class="tab-page">
+  <div class="fbar">
+    <input class="srch" id="dist-srch" placeholder="🔍 Search..." oninput="renderDCards()">
+    <select class="selc" id="dist-sf" onchange="renderDCards()"><option value="">All Status</option><option value="danger">Below 60%</option><option value="warn">60–80%</option><option value="ok">Above 80%</option></select>
+  </div>
+  <div class="dcards" id="dcards"></div>
+</div>
+
+<!-- SLOW-MOVING -->
+<div id="tab-slow" class="tab-page">
+  <div class="kpi-grid" style="margin-bottom:14px;">
+    <div class="kpi-card red"><div class="kpi-lbl">Slow SKUs</div><div class="kpi-val red" id="sl-cnt">—</div><div class="kpi-sub">Products</div></div>
+    <div class="kpi-card orange"><div class="kpi-lbl">Excess Stock Value</div><div class="kpi-val orange" id="sl-val">—</div><div class="kpi-sub">PKR</div></div>
+    <div class="kpi-card purple"><div class="kpi-lbl">Worst Offender</div><div class="kpi-val purple" style="font-size:13px" id="sl-worst">—</div><div class="kpi-sub" id="sl-wsub">—</div></div>
+  </div>
+  <div class="twrap">
+    <table>
+      <thead><tr><th onclick="srt('slow',0)">Product ↕</th><th onclick="srt('slow',1)">Distributor ↕</th><th onclick="srt('slow',2)">Team ↕</th><th onclick="srt('slow',3)">Closing Stock ↕</th><th onclick="srt('slow',4)">Monthly Avg ↕</th><th onclick="srt('slow',5)">60-Day Need ↕</th><th onclick="srt('slow',6)">Excess Stock ↕</th><th onclick="srt('slow',7)">Excess Value ↕</th><th>Category</th></tr></thead>
+      <tbody id="slow-body"></tbody>
+    </table>
+    <div class="pgn" id="slow-pgn"></div>
+  </div>
+</div>
+
+<!-- REPLENISHMENT DUE -->
+<div id="tab-replenishment" class="tab-page">
+  <div class="twrap">
+    <table>
+      <thead><tr><th onclick="srt('rep',0)">Product ↕</th><th onclick="srt('rep',1)">Distributor ↕</th><th onclick="srt('rep',2)">Team ↕</th><th onclick="srt('rep',3)">Price ↕</th><th onclick="srt('rep',4)">60D Target ↕</th><th onclick="srt('rep',5)">Invoiced ↕</th><th onclick="srt('rep',6)">Remaining ↕</th><th onclick="srt('rep',7)">Due Value ↕</th><th onclick="srt('rep',8)">Rep % ↕</th><th>Priority</th></tr></thead>
+      <tbody id="rep-body"></tbody>
+    </table>
+    <div class="pgn" id="rep-pgn"></div>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="tab-analytics" class="tab-page">
+  <div class="g3">
+    <div class="panel"><div class="sec-hdr"><div class="sec-title">Top Products — Gap</div></div><div class="chart-wrap"><canvas id="prodC"></canvas></div></div>
+    <div class="panel"><div class="sec-hdr"><div class="sec-title">Planned vs Invoiced by Team</div></div><div class="chart-wrap"><canvas id="tbC"></canvas></div></div>
+    <div class="panel"><div class="sec-hdr"><div class="sec-title">Due Value — Distributor</div></div><div class="chart-wrap"><canvas id="ddC"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="panel"><div class="sec-hdr"><div class="sec-title">Top 10 Replenishment Gap (PKR)</div></div><div class="chart-wrap" style="height:290px;"><canvas id="gapC"></canvas></div></div>
+    <div class="panel"><div class="sec-hdr"><div class="sec-title">Stock Coverage (Days)</div></div><div class="chart-wrap" style="height:290px;"><canvas id="covC"></canvas></div></div>
+  </div>
+</div>
+
+<div class="wm" id="wm">Shaigan Pharma — Distribution Effectiveness Monitor | <span id="wm-date"></span></div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="movl" id="up-modal">
+<div class="modal">
+  <button class="mclose" onclick="closeM('up-modal')">✕</button>
+  <div class="mtitle">📤 Upload Replenishment Data</div>
+  <div class="msub">Single or bulk upload — supports 50+ files simultaneously. Password protected.</div>
+  <div class="fg"><label class="flbl">Upload Password</label><input type="password" class="finp" id="up-pw" placeholder="Enter password…"></div>
+  <div class="fg">
+    <label class="flbl">Upload Mode</label>
+    <div class="radio-g">
+      <label class="radio-o"><input type="radio" name="um" value="add" checked> ➕ Add to Existing Data</label>
+      <label class="radio-o"><input type="radio" name="um" value="replace"> 🔄 Replace Database</label>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="flbl">Select CSV File(s) — No limit on file count</label>
+    <div class="dropz" id="dropz" onclick="document.getElementById('finput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="hDrop(event)">
+      <div class="dropico">📂</div>
+      <div class="droptxt" id="dtxt">Click or drag CSV files here</div>
+      <div class="dropsub">Hold Ctrl/Cmd to select multiple files</div>
+    </div>
+    <input type="file" id="finput" accept=".csv" multiple style="display:none" onchange="hFileSelect(this)">
+  </div>
+  <div id="fq-sec" style="display:none;">
+    <label class="flbl">Queued Files: <span id="fq-cnt" style="color:var(--accent)">0</span></label>
+    <div class="fqueue" id="fq-list"></div>
+  </div>
+  <div id="up-prog-sec" style="display:none;margin-top:9px;">
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;"><span>Processing…</span><span id="up-prog-txt">0%</span></div>
+    <div class="pw"><div class="uprog" id="up-prog-bar"></div></div>
+  </div>
+  <div style="background:var(--bg3);border-radius:7px;padding:9px;margin:10px 0;">
+    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;">Required Column Headers</div>
+    <div class="tagrow"><span class="tag">PRODUCTS</span><span class="tag">Ex-Fac. Price</span><span class="tag">Team Name</span><span class="tag">Distributor Name</span><span class="tag">JAN AS AVERAGE</span><span class="tag">AVG x 2.1</span><span class="tag">Closing Stock</span><span class="tag">Invoice</span><span class="tag">60 Day inventory</span></div>
+  </div>
+  <div id="up-msg"></div>
+  <div style="display:flex;gap:7px;justify-content:space-between;align-items:center;margin-top:12px;">
+    <button class="btn btn-ghost" onclick="dlFmt()" style="font-size:10px;">⬇ Download Format</button>
+    <div style="display:flex;gap:7px;"><button class="btn btn-ghost" onclick="closeM('up-modal')">Cancel</button><button class="btn btn-primary" id="up-btn" onclick="procUpload()">Upload & Process</button></div>
+  </div>
+</div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="movl" id="adm-modal">
+<div class="modal" style="min-width:580px;max-width:840px;">
+  <button class="mclose" onclick="closeM('adm-modal')">✕</button>
+  <div class="mtitle">⚙ Admin Panel</div>
+  <div class="msub">Full dashboard configuration. Admin password required.</div>
+  <div id="adm-login">
+    <div class="fg"><label class="flbl">Admin Password</label><input type="password" class="finp" id="adm-pw" placeholder="Enter admin password…" onkeydown="if(event.key==='Enter')chkAdm()"></div>
+    <div id="adm-lmsg"></div>
+    <button class="btn btn-primary" onclick="chkAdm()" style="margin-top:6px;">Login →</button>
+  </div>
+  <div id="adm-panel" style="display:none;">
+    <div class="adm-g">
+      <div class="adm-sb">
+        <div class="adm-mi active" onclick="admSec('theme',this)">🎨 Theme</div>
+        <div class="adm-mi" onclick="admSec('thresholds',this)">📏 Thresholds</div>
+        <div class="adm-mi" onclick="admSec('branding',this)">🏷 Branding</div>
+        <div class="adm-mi" onclick="admSec('data',this)">💾 Data Mgmt</div>
+      </div>
+      <div class="adm-c">
+
+        <!-- THEME -->
+        <div id="adm-theme">
+          <div class="adm-ttl">Theme Selection</div>
+          <div style="display:flex;gap:9px;margin-bottom:18px;">
+            <div class="tsw" id="tsw-dark" onclick="setTheme('dark')">
+              <div class="tsw-prev" style="background:#070c14;"><div class="tsb" style="background:#0f1c2e"></div><div class="tsb" style="background:#00d4ff"></div><div class="tsb" style="background:#00e5a0"></div><div class="tsb" style="background:#ff4757"></div></div>
+              <div class="tsw-lbl">DARK</div>
+            </div>
+            <div class="tsw" id="tsw-medium" onclick="setTheme('medium')">
+              <div class="tsw-prev" style="background:#eef2f7;"><div class="tsb" style="background:#ffffff"></div><div class="tsb" style="background:#0070cc"></div><div class="tsb" style="background:#00a870"></div><div class="tsb" style="background:#cc2233"></div></div>
+              <div class="tsw-lbl">MEDIUM</div>
+            </div>
+            <div class="tsw" id="tsw-light" onclick="setTheme('light')">
+              <div class="tsw-prev" style="background:#f8fafc;"><div class="tsb" style="background:#ffffff"></div><div class="tsb" style="background:#0060bb"></div><div class="tsb" style="background:#008855"></div><div class="tsb" style="background:#bb1122"></div></div>
+              <div class="tsw-lbl">LIGHT</div>
+            </div>
+          </div>
+          <div class="adm-ttl" style="margin-bottom:8px;">Accent Color</div>
+          <div class="crow">
+            <div class="csw" style="background:#00d4ff" onclick="setAccent('#00d4ff')"></div>
+            <div class="csw" style="background:#00e5a0" onclick="setAccent('#00e5a0')"></div>
+            <div class="csw" style="background:#a855f7" onclick="setAccent('#a855f7')"></div>
+            <div class="csw" style="background:#ff9500" onclick="setAccent('#ff9500')"></div>
+            <div class="csw" style="background:#ff4757" onclick="setAccent('#ff4757')"></div>
+            <div class="csw" style="background:#0070cc" onclick="setAccent('#0070cc')"></div>
+            <div class="csw" style="background:#ffd43b" onclick="setAccent('#ffd43b')"></div>
+            <input type="color" value="#00d4ff" onchange="setAccent(this.value)" style="width:28px;height:28px;border-radius:5px;border:none;cursor:pointer;padding:0;">
+          </div>
+        </div>
+
+        <!-- THRESHOLDS -->
+        <div id="adm-thresholds" style="display:none;">
+          <div class="adm-ttl">Performance Thresholds</div>
+          <div class="fg"><label class="flbl">Green Threshold (%) — Good</label><input type="number" class="finp" id="tg" value="80" min="50" max="100"></div>
+          <div class="fg"><label class="flbl">Orange Threshold (%) — Warning</label><input type="number" class="finp" id="to" value="60" min="20" max="80"></div>
+          <div class="fg"><label class="flbl">Slow-Moving Multiplier (× Monthly Avg)</label><input type="number" class="finp" id="sm" value="2.0" min="1" max="5" step="0.1"></div>
+          <div class="fg"><label class="flbl">Target Stock Days</label><input type="number" class="finp" id="td" value="60" min="30" max="120"></div>
+          <button class="btn btn-primary" onclick="applyThr()">Apply & Refresh</button>
+        </div>
+
+        <!-- BRANDING -->
+        <div id="adm-branding" style="display:none;">
+          <div class="adm-ttl">Branding & Labels</div>
+          <div class="fg"><label class="flbl">Company Name</label><input type="text" class="finp" id="bn-co" value="Shaigan Pharma"></div>
+          <div class="fg"><label class="flbl">Dashboard Subtitle</label><input type="text" class="finp" id="bn-sub" value="Distribution Effectiveness Monitor"></div>
+          <div class="fg"><label class="flbl">Watermark</label><input type="text" class="finp" id="bn-wm" value="Shaigan Pharma — Distribution Effectiveness Monitor"></div>
+          <div class="fg">
+            <label class="flbl">Company Logo</label>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
+              <div style="width:56px;height:56px;border-radius:10px;border:2px solid var(--border2);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg2);">
+                <img id="logo-preview" src="" style="width:100%;height:100%;object-fit:contain;display:none;">
+                <span id="logo-preview-placeholder" style="font-size:22px;opacity:0.4;">🖼</span>
+              </div>
+              <div>
+                <button class="btn btn-ghost" onclick="document.getElementById('logo-file-input').click()" style="font-size:11px;margin-bottom:5px;">📁 Choose Logo Image</button>
+                <button class="btn btn-ghost" onclick="resetLogo()" style="font-size:11px;color:var(--red);">✕ Remove Logo</button>
+                <div style="font-size:10px;color:var(--text3);margin-top:3px;">PNG, JPG, SVG supported</div>
+              </div>
+            </div>
+            <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="previewLogo(this)">
+          </div>
+          <button class="btn btn-primary" onclick="applyBrand()">Apply Branding</button>
+        </div>
+
+        <!-- DATA -->
+        <div id="adm-data" style="display:none;">
+          <div class="adm-ttl">Data Management</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <button class="btn btn-danger" onclick="clearDB()">🗑 Clear All Data</button>
+            <button class="btn btn-warn" onclick="expData()">📤 Export Data (CSV)</button>
+            <button class="btn btn-ghost" onclick="resetSet()">↺ Reset All Settings</button>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:var(--bg2);border-radius:7px;">
+            <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:6px;">DATABASE STATS</div>
+            <div style="font-size:11px;color:var(--text2);" id="db-stats">—</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+Chart.defaults.font.family="'Outfit',sans-serif";
+
+// ── STATE ──
+let DB=[], GF={team:'',dist:'',prod:''}, settings={tG:80,tO:60,sm:2,td:60,accent:'',theme:'dark'};
+let charts={}, sortS={}, spg=1, rpg=1, PG=20;
+let pendingFiles=[];
+
+const SEED=`PRODUCTS,Ex-Fac. Price,Team Name,Distributor Name,Jan-26,JAN AS AVERAGE,AVG x 2.1,Closing Stock,TOTAL ORDER,6-Feb,12-Feb,Invoice,60 Day inventory
+Famot 20,225.86,MEDIX,HABIB ENTERPRISES,39,39,82,23,59,35,23,27,0
+Famot 40,220.45,MEDIX,HABIB ENTERPRISES,64,64,134,18,116,70,46,84,20
+Famot 40 INJ,154.70,MEDIX,HABIB ENTERPRISES,54,54,113,166,0,0,0,0,0
+Pegalin75,299.74,MEDIX,HABIB ENTERPRISES,58,58,122,43,79,47,31,47,0
+Artho Plus Tab,462.55,MEDIX,HABIB ENTERPRISES,31,31,65,8,57,34,23,25,0
+Irose IV,1276.28,Femicare-1,HABIB ENTERPRISES,1,1,2,63,0,0,0,0,0
+Clycin V,580.13,Femicare-1,HABIB ENTERPRISES,27,27,57,23,34,20,13,2,0
+Clozox V Cr,129.11,Femicare-1,HABIB ENTERPRISES,225,225,473,72,401,241,159,369,144
+Clozox 500mg Tab,103.12,Femicare-1,HABIB ENTERPRISES,150,150,315,72,243,146,97,211,61
+Famot Suspension,96.69,Femicare-1,HABIB ENTERPRISES,1108,1108,2327,921,1406,847,559,1374,266
+Esso 40,495.04,Khyber-1,HABIB ENTERPRISES,1283,1283,2694,1020,1674,1009,666,1642,359
+Tepride,296.46,Khyber-1,HABIB ENTERPRISES,66,66,139,14,125,75,50,93,27
+Mionex Tab,406.09,Khyber-1,HABIB ENTERPRISES,102,102,214,95,119,72,47,87,0
+Esso NS 500/20,928.20,Khyber-1,HABIB ENTERPRISES,86,86,181,92,89,53,35,57,0
+Fudic -15,308.63,Dermo-1,HABIB ENTERPRISES,156,156,343,274,69,42,28,37,0
+Fudic -5,153.15,Dermo-1,HABIB ENTERPRISES,46,46,101,220,0,0,0,0,0
+Ternifer 250mg,452.50,Dermo-1,HABIB ENTERPRISES,45,45,99,24,75,45,30,43,0
+Isotin E Gel,346.53,Dermo-1,HABIB ENTERPRISES,142,142,312,108,204,123,81,172,30
+Clycin-T Gel,193.38,Dermo-1,HABIB ENTERPRISES,325,325,715,123,592,357,235,560,235
+Siton Plus,288.22,Dermo-1,HABIB ENTERPRISES,168,168,370,96,274,165,109,242,74
+Clycin T Lotion,193.38,Dermo-2,HABIB ENTERPRISES,289,289,636,53,583,351,232,551,262
+Ketowin,357.36,Dermo-2,HABIB ENTERPRISES,275,275,605,36,569,343,226,537,262
+Clozox-H,94.32,Dermo-2,HABIB ENTERPRISES,1439,1439,3166,486,2680,1614,1065,2648,1209
+Clozox,123.76,Dermo-2,HABIB ENTERPRISES,85,85,187,21,166,100,66,134,49
+EyeLub Eye Drops,379.02,OPTIX,HABIB ENTERPRISES,97,97,204,87,117,70,46,85,0
+Lamcy Ophthalmic Suspension,153.15,OPTIX,HABIB ENTERPRISES,30,30,63,22,41,25,16,9,0
+Mydex Ophthalmic Suspension,247.52,OPTIX,HABIB ENTERPRISES,94,94,197,35,162,98,65,130,36
+Pegalin50,278.46,KHYBER-3,HABIB ENTERPRISES,69,69,145,12,133,80,53,101,32
+ACETOFEN FORTE TAB,123.76,KHYBER-3,HABIB ENTERPRISES,52,52,109,98,11,7,4,0,0
+Esso 20,290.84,Khyber-2,HABIB ENTERPRISES,893,893,1875,609,1266,763,503,1234,341
+MITS 15,406.09,Khyber-2,HABIB ENTERPRISES,155,155,326,35,291,175,116,259,104
+Jovit,1082.90,Khyber-2,HABIB ENTERPRISES,104,104,218,43,175,106,70,143,39
+Zeespa,324.87,Khyber-2,HABIB ENTERPRISES,316,316,664,107,557,335,221,525,209
+Deezon Plus 2gm,502.78,SHIELD,HABIB ENTERPRISES,170,170,357,30,327,197,130,295,125
+Cepime-500 Inj,494.09,SHIELD,HABIB ENTERPRISES,50,50,105,0,105,63,42,73,23
+Brotin,547.54,FEMICARE-2,HABIB ENTERPRISES,161,161,338,19,319,192,127,287,126
+Fudic-H,262.99,DERMOCARE-3,HABIB ENTERPRISES,684,684,1505,609,896,540,356,864,180
+Ternifer Gel,169.61,DERMOCARE-3,HABIB ENTERPRISES,71,71,156,48,108,65,43,76,5
+Skab Lotion,125.76,DERMOCARE-3,HABIB ENTERPRISES,900,900,1980,1899,81,49,32,49,0
+Skab Cream,90.48,DERMOCARE-3,HABIB ENTERPRISES,919,919,2022,1812,210,126,83,178,0`;
+
+function init(){
+  const s=localStorage.getItem('sp_db'); if(s){try{DB=JSON.parse(s);}catch(e){DB=[];}}
+  if(!DB.length){DB=parseCSV(SEED);svDB();}
+  const ss=localStorage.getItem('sp_set'); if(ss){try{settings={...settings,...JSON.parse(ss)};}catch(e){}}
+  document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('wm-date').textContent=new Date().toLocaleDateString();
+  if(settings.theme)setTheme(settings.theme,true);
+  if(settings.logoSrc){const img=document.getElementById('logo-img');if(img){img.src=settings.logoSrc;img.style.display='block';}}
+  if(settings.accent)document.documentElement.style.setProperty('--accent',settings.accent);
+  popGF(); renderAll();
+}
+
+function parseCSV(txt){return Papa.parse(txt,{header:true,skipEmptyLines:true}).data.map(parseR).filter(Boolean);}
+function parseR(r){
+  const c=v=>{if(v===undefined||v===null||v==='')return 0;return parseFloat(String(v).replace(/,/g,''))||0;};
+  const p=r['PRODUCTS']||r['Product'];if(!p||!String(p).trim())return null;
+  return{product:String(p).trim(),price:c(r['Ex-Fac. Price']||r['Price']),team:String(r['Team Name']||r['Team']||'').trim(),
+    distributor:String(r['Distributor Name']||r['Distributor']||'').trim(),
+    monthly:c(r['JAN AS AVERAGE']||r['Monthly Avg']),avg21:c(r['AVG x 2.1']),
+    closingStock:c(r['Closing Stock']),invoice:c(r['Invoice']||r['Invoiced']),inventory60:c(r['60 Day inventory'])};
+}
+function svDB(){localStorage.setItem('sp_db',JSON.stringify(DB));}
+function svSet(){localStorage.setItem('sp_set',JSON.stringify(settings));}
+
+// FILTERED DATA
+function fDB(){return DB.filter(r=>{if(GF.team&&r.team!==GF.team)return false;if(GF.dist&&r.distributor!==GF.dist)return false;if(GF.prod&&r.product!==GF.prod)return false;return true;});}
+
+// CALCS
+function tgt(r){return r.avg21||(r.monthly*2);}
+function rem(r){return Math.max(0,tgt(r)-r.invoice);}
+function rPct(r){const t=tgt(r);if(!t)return null;return Math.min(100,(r.invoice/t)*100);}
+function dv(r){return rem(r)*r.price;}
+function isSlw(r){if(!r.monthly)return false;return r.closingStock>r.monthly*settings.sm;}
+function exS(r){return Math.max(0,r.closingStock-(r.monthly*2));}
+function fmt(n){return Math.round(n).toLocaleString('en-PK');}
+function fP(n){return n!==null?n.toFixed(1)+'%':'—';}
+function pbC(p){return p>=settings.tG?'high':p>=settings.tO?'mid':'low';}
+function scChip(p){if(p===null)return '<span class="chip grey">N/A</span>';if(p>=settings.tG)return '<span class="chip ok">✓ On Track</span>';if(p>=settings.tO)return '<span class="chip warn">⚠ Warning</span>';return '<span class="chip danger">✗ Critical</span>';}
+function prChip(p){if(p===null)return '<span class="chip grey">—</span>';if(p>=settings.tG)return '<span class="chip ok">LOW</span>';if(p>=settings.tO)return '<span class="chip warn">MEDIUM</span>';return '<span class="chip danger">HIGH</span>';}
+function dSumm(data){
+  const m={};(data||fDB()).forEach(r=>{const k=r.distributor;if(!m[k])m[k]={distributor:k,teams:new Set(),planned:0,invoiced:0,due:0,slow:0};m[k].teams.add(r.team);m[k].planned+=tgt(r);m[k].invoiced+=r.invoice;m[k].due+=dv(r);if(isSlw(r))m[k].slow++;});
+  return Object.values(m).map(d=>({...d,teams:[...d.teams].join(', '),pct:d.planned>0?(d.invoiced/d.planned)*100:null}));
+}
+
+// GLOBAL FILTER
+function popGF(){
+  const teams=[...new Set(DB.map(r=>r.team))].sort();
+  const dists=[...new Set(DB.map(r=>r.distributor))].sort();
+  const prods=[...new Set(DB.map(r=>r.product))].sort();
+  const gt=document.getElementById('gf-team'),gd=document.getElementById('gf-dist'),gp=document.getElementById('gf-prod');
+  gt.innerHTML='<option value="">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join('');
+  gd.innerHTML='<option value="">All Distributors</option>'+dists.map(d=>`<option value="${d}">${d}</option>`).join('');
+  gp.innerHTML='<option value="">All Products</option>'+prods.map(p=>`<option value="${p}">${p}</option>`).join('');
+  gt.value=GF.team; gd.value=GF.dist; gp.value=GF.prod;
+}
+function applyGF(){GF.team=document.getElementById('gf-team').value;GF.dist=document.getElementById('gf-dist').value;GF.prod=document.getElementById('gf-prod').value;updBadges();renderAll();}
+function setTeam(t){GF.team=GF.team===t?'':t;document.getElementById('gf-team').value=GF.team;updBadges();renderAll();showN(GF.team?`🔍 Team: ${GF.team}`:'Filter cleared');}
+function setDist(d){GF.dist=GF.dist===d?'':d;document.getElementById('gf-dist').value=GF.dist;updBadges();renderAll();showN(GF.dist?`🔍 Dist: ${GF.dist}`:'Filter cleared');}
+function setProd(p){GF.prod=GF.prod===p?'':p;document.getElementById('gf-prod').value=GF.prod;updBadges();renderAll();showN(GF.prod?`🔍 Product: ${GF.prod}`:'Filter cleared');}
+function clearGF(){GF={team:'',dist:'',prod:''};document.getElementById('gf-team').value='';document.getElementById('gf-dist').value='';document.getElementById('gf-prod').value='';updBadges();renderAll();showN('All filters cleared');}
+function updBadges(){
+  let h='';
+  if(GF.team)h+=`<div class="af-badge" onclick="setTeam('${esc(GF.team)}')">Team: ${GF.team} <span>✕</span></div>`;
+  if(GF.dist)h+=`<div class="af-badge" onclick="setDist('${esc(GF.dist)}')">Dist: ${GF.dist} <span>✕</span></div>`;
+  if(GF.prod)h+=`<div class="af-badge" onclick="setProd('${esc(GF.prod)}')">Product: ${GF.prod.length>20?GF.prod.slice(0,20)+'…':GF.prod} <span>✕</span></div>`;
+  document.getElementById('af-tags').innerHTML=h;
+  document.getElementById('clear-gf').style.display=(GF.team||GF.dist||GF.prod)?'block':'none';
+}
+function esc(s){return s.replace(/'/g,"&#39;").replace(/"/g,"&quot;");}
+
+// RENDER ALL
+function renderAll(){
+  const data=fDB();
+  renderKPIs(data);renderOvCharts(data);renderMini(data);
+  renderPills();renderDCards();renderSlowT();renderRepT();renderAnCharts(data);
+  let h='';
+  if(GF.team)h+=`<span class="chip info click" onclick="setTeam('${esc(GF.team)}')">Team: ${GF.team} ✕</span> `;
+  if(GF.dist)h+=`<span class="chip info click" onclick="setDist('${esc(GF.dist)}')">Dist: ${GF.dist} ✕</span> `;
+  if(GF.prod)h+=`<span class="chip info click" onclick="setProd('${esc(GF.prod)}')">Product: ${GF.prod.length>18?GF.prod.slice(0,18)+'…':GF.prod} ✕</span>`;
+  document.getElementById('ov-badges').innerHTML=h;
+}
+
+function renderKPIs(data){
+  let tp=0,ti=0,td=0,sc=0;
+  data.forEach(r=>{tp+=tgt(r);ti+=r.invoice;td+=dv(r);if(isSlw(r))sc++;});
+  const pct=tp>0?(ti/tp)*100:0;
+  document.getElementById('kpi-p').textContent=fmt(tp);
+  document.getElementById('kpi-i').textContent=fmt(ti);
+  document.getElementById('kpi-r').textContent=fP(pct);
+  document.getElementById('kpi-d').textContent='PKR '+fmt(td);
+  document.getElementById('kpi-s').textContent=sc;
+  document.getElementById('sp').textContent=fmt(tp);
+  document.getElementById('si').textContent=fmt(ti);
+  document.getElementById('sg').textContent=fmt(tp-ti);
+  document.getElementById('dpct').textContent=pct.toFixed(1)+'%';
+  document.getElementById('dpct').style.color=pct>=settings.tG?'var(--green)':pct>=settings.tO?'var(--orange)':'var(--red)';
+  document.getElementById('ab').style.width=Math.min(100,pct).toFixed(0)+'%';
+  document.getElementById('ab').className='pb '+pbC(pct);
+  document.getElementById('gb').style.width=Math.min(100,100-pct).toFixed(0)+'%';
+  // slow kpis
+  const sd=data.filter(isSlw);let sv=0,wp='',wv=0;
+  sd.forEach(r=>{const ev=exS(r)*r.price;sv+=ev;if(ev>wv){wv=ev;wp=r.product;}});
+  document.getElementById('sl-cnt').textContent=sd.length;
+  document.getElementById('sl-val').textContent='PKR '+fmt(sv);
+  document.getElementById('sl-worst').textContent=wp||'—';
+  document.getElementById('sl-wsub').textContent=wp?'PKR '+fmt(wv)+' excess':'';
+}
+
+function renderPills(){
+  const teams=[...new Set(DB.map(r=>r.team))].sort();
+  document.getElementById('team-pills').innerHTML=teams.map(t=>`<div class="tpill${GF.team===t?' active':''}" onclick="setTeam('${esc(t)}')">${t}</div>`).join('');
+}
+
+function renderOvCharts(data){
+  let tp=0,ti=0;data.forEach(r=>{tp+=tgt(r);ti+=r.invoice;});
+  const rem2=Math.max(0,tp-ti),pct=tp>0?(ti/tp)*100:0;
+  const col=pct>=settings.tG?'#00e5a0':pct>=settings.tO?'#ff9500':'#ff4757';
+  if(charts.donut)charts.donut.destroy();
+  charts.donut=new Chart(document.getElementById('donutC'),{type:'doughnut',
+    data:{datasets:[{data:[ti,rem2],backgroundColor:[col,'rgba(30,48,80,0.35)'],borderWidth:0,hoverOffset:4}]},
+    options:{cutout:'74%',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)} units`}}}}});
+  const tm={};data.forEach(r=>{if(!tm[r.team])tm[r.team]={p:0,i:0};tm[r.team].p+=tgt(r);tm[r.team].i+=r.invoice;});
+  const tms=Object.keys(tm);
+  if(charts.team)charts.team.destroy();
+  charts.team=new Chart(document.getElementById('teamC'),{type:'bar',
+    data:{labels:tms,datasets:[{label:'Planned',data:tms.map(t=>tm[t].p),backgroundColor:'rgba(0,212,255,0.22)',borderColor:'#00d4ff',borderWidth:1.5},{label:'Invoiced',data:tms.map(t=>tm[t].i),backgroundColor:'rgba(0,229,160,0.22)',borderColor:'#00e5a0',borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,onClick:(e,el)=>{if(el.length)setTeam(tms[el[0].index]);},
+      plugins:{legend:{labels:{color:'#8aadcc',font:{size:9}}}},
+      scales:{x:{ticks:{color:'#4a7090',maxRotation:45,font:{size:8}},grid:{color:'rgba(30,48,80,0.3)'}},y:{ticks:{color:'#4a7090',font:{size:9}},grid:{color:'rgba(30,48,80,0.3)'}}}}});
+}
+
+function renderMini(data){
+  document.getElementById('mini-body').innerHTML=dSumm(data).map(d=>`
+    <tr style="cursor:pointer" onclick="setDist('${esc(d.distributor)}')">
+      <td class="bold">${d.distributor}</td>
+      <td class="mono">${fmt(d.planned)}</td><td class="mono">${fmt(d.invoiced)}</td>
+      <td><div style="display:flex;align-items:center;gap:6px;"><div class="pw" style="width:65px;"><div class="pb ${pbC(d.pct||0)}" style="width:${Math.min(100,d.pct||0).toFixed(0)}%"></div></div><span class="mono">${fP(d.pct)}</span></div></td>
+      <td class="mono" style="color:var(--red)">PKR ${fmt(d.due)}</td>
+      <td><span class="chip ${d.slow>10?'danger':d.slow>5?'warn':'ok'}">${d.slow}</span></td>
+      <td>${scChip(d.pct)}</td>
+    </tr>`).join('');
+}
+
+function renderDCards(){
+  const srch=document.getElementById('dist-srch').value.toLowerCase();
+  const sf=document.getElementById('dist-sf').value;
+  const summs=dSumm(fDB()).filter(d=>{
+    if(srch&&!d.distributor.toLowerCase().includes(srch))return false;
+    if(sf){const p=d.pct;if(sf==='danger'&&(p===null||p>=settings.tO))return false;if(sf==='warn'&&(p===null||p<settings.tO||p>=settings.tG))return false;if(sf==='ok'&&(p===null||p<settings.tG))return false;}
+    return true;
+  });
+  const c=document.getElementById('dcards');
+  if(!summs.length){c.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">No distributors match filters</div></div>`;return;}
+  c.innerHTML=summs.map(d=>{
+    const p=d.pct||0,col=p>=settings.tG?'var(--green)':p>=settings.tO?'var(--orange)':'var(--red)';
+    return`<div class="dcard${GF.dist===d.distributor?' sel':''}" onclick="setDist('${esc(d.distributor)}')">
+      <div class="dcard-hdr"><div><div class="dname">${d.distributor}</div><div class="dteam">${d.teams}</div></div><div style="text-align:right"><div class="damount">PKR ${fmt(d.due)}</div><div class="dlbl">Due Amount</div></div></div>
+      <div style="margin-bottom:7px;"><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-bottom:3px;"><span>Achievement</span><span style="color:${col};font-weight:700">${fP(d.pct)}</span></div><div class="pw"><div class="pb ${pbC(p)}" style="width:${Math.min(100,p).toFixed(0)}%"></div></div></div>
+      <div class="dmet"><div><div class="dmet-v" style="color:var(--accent)">${fmt(d.planned)}</div><div class="dmet-l">Planned</div></div><div><div class="dmet-v" style="color:var(--green)">${fmt(d.invoiced)}</div><div class="dmet-l">Invoiced</div></div><div><div class="dmet-v" style="color:var(--red)">${d.slow}</div><div class="dmet-l">Slow SKUs</div></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderSlowT(pg=null){
+  if(pg!==null)spg=pg;
+  let rows=fDB().filter(isSlw);
+  const s=sortS['slow'];
+  if(s){rows.sort((a,b)=>{const g=r=>[r.product,r.distributor,r.team,r.closingStock,r.monthly,tgt(r),exS(r),exS(r)*r.price][s.c];return s.d*(typeof g(a)==='string'?g(a).localeCompare(g(b)):g(a)-g(b));});}
+  const tot=rows.length,tp=Math.ceil(tot/PG)||1;
+  if(spg>tp)spg=1;
+  const pr=rows.slice((spg-1)*PG,spg*PG);
+  const tb=document.getElementById('slow-body');
+  if(!pr.length){tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:35px;color:var(--text3)">No slow-moving inventory for current filter</td></tr>`;document.getElementById('slow-pgn').innerHTML='';return;}
+  tb.innerHTML=pr.map(r=>{
+    const ex=exS(r),ev=ex*r.price,ratio=r.monthly>0?r.closingStock/r.monthly:0;
+    const cat=ratio>4?'<span class="chip danger">CRITICAL</span>':ratio>2.5?'<span class="chip warn">HIGH</span>':'<span class="chip info">MODERATE</span>';
+    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">${fmt(r.closingStock)}</td><td class="mono">${fmt(r.monthly)}</td><td class="mono">${fmt(tgt(r))}</td><td class="mono" style="color:var(--orange)">${fmt(ex)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(ev)}</td><td>${cat}</td></tr>`;
+  }).join('');
+  pgn('slow-pgn',spg,tp,renderSlowT);
+}
+
+function renderRepT(pg=null){
+  if(pg!==null)rpg=pg;
+  let rows=fDB().filter(r=>rem(r)>0);
+  const s=sortS['rep'];
+  if(s){rows.sort((a,b)=>{const g=r=>[r.product,r.distributor,r.team,r.price,tgt(r),r.invoice,rem(r),dv(r),rPct(r)||0][s.c];return s.d*(typeof g(a)==='string'?g(a).localeCompare(g(b)):g(a)-g(b));});}
+  const tot=rows.length,tp=Math.ceil(tot/PG)||1;
+  if(rpg>tp)rpg=1;
+  const pr=rows.slice((rpg-1)*PG,rpg*PG);
+  const tb=document.getElementById('rep-body');
+  if(!pr.length){tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:35px;color:var(--green)">✓ All replenishments complete for current filter!</td></tr>`;document.getElementById('rep-pgn').innerHTML='';return;}
+  tb.innerHTML=pr.map(r=>{
+    const t2=tgt(r),rm=rem(r),dvr=dv(r),p=rPct(r);
+    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">PKR ${fmt(r.price)}</td><td class="mono">${fmt(t2)}</td><td class="mono" style="color:var(--green)">${fmt(r.invoice)}</td><td class="mono" style="color:var(--orange)">${fmt(rm)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(dvr)}</td><td><div style="display:flex;align-items:center;gap:4px;"><div class="pw" style="width:48px;"><div class="pb ${pbC(p||0)}" style="width:${Math.min(100,p||0).toFixed(0)}%"></div></div><span class="mono" style="font-size:10px">${fP(p)}</span></div></td><td>${prChip(p)}</td></tr>`;
+  }).join('');
+  pgn('rep-pgn',rpg,tp,renderRepT);
+}
+
+function pgn(id,cur,tot,fn){
+  const el=document.getElementById(id);
+  if(tot<=1){el.innerHTML='';return;}
+  let h=`<span style="font-size:10px;color:var(--text3);margin-right:5px;">${cur}/${tot}</span>`;
+  h+=`<button class="pgb" onclick="${fn.name}(1)" ${cur===1?'disabled':''}>«</button>`;
+  h+=`<button class="pgb" onclick="${fn.name}(${Math.max(1,cur-1)})" ${cur===1?'disabled':''}>‹</button>`;
+  for(let i=Math.max(1,cur-2);i<=Math.min(tot,cur+2);i++)h+=`<button class="pgb${i===cur?' active':''}" onclick="${fn.name}(${i})">${i}</button>`;
+  h+=`<button class="pgb" onclick="${fn.name}(${Math.min(tot,cur+1)})" ${cur===tot?'disabled':''}>›</button>`;
+  h+=`<button class="pgb" onclick="${fn.name}(${tot})" ${cur===tot?'disabled':''}>»</button>`;
+  el.innerHTML=h;
+}
+
+function renderAnCharts(data){
+  if(!data)data=fDB();
+  const gc='rgba(30,48,80,0.3)',pal=['#00d4ff','#00e5a0','#ff9500','#ff4757','#a855f7','#ffd43b'];
+  // team bar
+  const tm={};data.forEach(r=>{if(!tm[r.team])tm[r.team]={p:0,i:0};tm[r.team].p+=tgt(r);tm[r.team].i+=r.invoice;});
+  const tms=Object.keys(tm);
+  if(charts.tb)charts.tb.destroy();
+  charts.tb=new Chart(document.getElementById('tbC'),{type:'bar',data:{labels:tms,datasets:[{label:'Planned',data:tms.map(t=>tm[t].p),backgroundColor:'rgba(0,212,255,0.22)',borderColor:'#00d4ff',borderWidth:1.5},{label:'Invoiced',data:tms.map(t=>tm[t].i),backgroundColor:'rgba(0,229,160,0.22)',borderColor:'#00e5a0',borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,onClick:(e,el)=>{if(el.length)setTeam(tms[el[0].index]);},plugins:{legend:{labels:{color:'#8aadcc',font:{size:9}}}},scales:{x:{ticks:{color:'#4a7090',maxRotation:45,font:{size:8}},grid:{color:gc}},y:{ticks:{color:'#4a7090'},grid:{color:gc}}}}});
+  // due dist
+  const dd={};data.forEach(r=>{if(!dd[r.distributor])dd[r.distributor]=0;dd[r.distributor]+=dv(r);});
+  const dk=Object.keys(dd);
+  if(charts.dd)charts.dd.destroy();
+  charts.dd=new Chart(document.getElementById('ddC'),{type:'doughnut',data:{labels:dk,datasets:[{data:dk.map(k=>dd[k]),backgroundColor:dk.map((_,i)=>pal[i%pal.length]+'70'),borderColor:dk.map((_,i)=>pal[i%pal.length]),borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,onClick:(e,el)=>{if(el.length)setDist(dk[el[0].index]);},plugins:{legend:{position:'right',labels:{color:'#8aadcc',font:{size:8},boxWidth:9}}}}});
+  // gap
+  const sg=[...data].filter(r=>rem(r)>0).sort((a,b)=>dv(b)-dv(a)).slice(0,10);
+  if(charts.gap)charts.gap.destroy();
+  charts.gap=new Chart(document.getElementById('gapC'),{type:'bar',data:{labels:sg.map(r=>r.product.length>15?r.product.slice(0,15)+'…':r.product),datasets:[{label:'Due Value',data:sg.map(dv),backgroundColor:sg.map(r=>{const p=rPct(r)||0;return p>=settings.tG?'rgba(0,229,160,0.3)':p>=settings.tO?'rgba(255,149,0,0.3)':'rgba(255,71,87,0.3)';}),borderColor:sg.map(r=>{const p=rPct(r)||0;return p>=settings.tG?'#00e5a0':p>=settings.tO?'#ff9500':'#ff4757';}),borderWidth:1.5}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4a7090'},grid:{color:gc}},y:{ticks:{color:'#8aadcc',font:{size:8}},grid:{color:gc}}}}});
+  // coverage
+  const cv=[...data].filter(r=>r.monthly>0).map(r=>({product:r.product,days:(r.closingStock/r.monthly*30)})).sort((a,b)=>b.days-a.days).slice(0,12);
+  if(charts.cov)charts.cov.destroy();
+  charts.cov=new Chart(document.getElementById('covC'),{type:'bar',data:{labels:cv.map(r=>r.product.length>12?r.product.slice(0,12)+'…':r.product),datasets:[{label:'Days',data:cv.map(r=>r.days.toFixed(0)),backgroundColor:cv.map(r=>r.days>90?'rgba(255,71,87,0.3)':r.days>60?'rgba(255,149,0,0.3)':'rgba(0,212,255,0.22)'),borderColor:cv.map(r=>r.days>90?'#ff4757':r.days>60?'#ff9500':'#00d4ff'),borderWidth:1.5}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4a7090'},grid:{color:gc}},y:{ticks:{color:'#8aadcc',font:{size:8}},grid:{color:gc}}}}});
+  // prod
+  const pr=[...data].filter(r=>tgt(r)>0).sort((a,b)=>dv(b)-dv(a)).slice(0,8);
+  if(charts.prod)charts.prod.destroy();
+  charts.prod=new Chart(document.getElementById('prodC'),{type:'bar',data:{labels:pr.map(r=>r.product.length>12?r.product.slice(0,12)+'…':r.product),datasets:[{label:'Target',data:pr.map(tgt),backgroundColor:'rgba(0,212,255,0.22)',borderColor:'#00d4ff',borderWidth:1.5},{label:'Invoiced',data:pr.map(r=>r.invoice),backgroundColor:'rgba(0,229,160,0.22)',borderColor:'#00e5a0',borderWidth:1.5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8aadcc',font:{size:9}}}},scales:{x:{ticks:{color:'#4a7090',maxRotation:45,font:{size:8}},grid:{color:gc}},y:{ticks:{color:'#4a7090'},grid:{color:gc}}}}});
+}
+
+// TABS
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// SORT
+function srt(tbl,col){
+  const s=sortS[tbl];sortS[tbl]={c:col,d:(s&&s.c===col)?-s.d:1};
+  if(tbl==='slow')renderSlowT();else renderRepT();
+}
+
+// UPLOAD
+function openUpload(){openM('up-modal');pendingFiles=[];document.getElementById('up-msg').innerHTML='';document.getElementById('up-pw').value='';document.getElementById('dtxt').textContent='Click or drag CSV files here';document.getElementById('fq-sec').style.display='none';document.getElementById('up-prog-sec').style.display='none';}
+function hFileSelect(inp){Array.from(inp.files).forEach(f=>{if(!pendingFiles.find(x=>x.name===f.name&&x.size===f.size))pendingFiles.push(f);});inp.value='';renderFQ();}
+function hDrop(e){e.preventDefault();document.getElementById('dropz').classList.remove('drag');Array.from(e.dataTransfer.files).filter(f=>f.name.endsWith('.csv')).forEach(f=>{if(!pendingFiles.find(x=>x.name===f.name&&x.size===f.size))pendingFiles.push(f);});renderFQ();}
+function renderFQ(){
+  const fqs=document.getElementById('fq-sec'),fql=document.getElementById('fq-list');
+  document.getElementById('fq-cnt').textContent=pendingFiles.length;
+  document.getElementById('dtxt').textContent=pendingFiles.length?`${pendingFiles.length} file(s) queued — click to add more`:'Click or drag CSV files here';
+  if(!pendingFiles.length){fqs.style.display='none';return;}
+  fqs.style.display='block';
+  fql.innerHTML=pendingFiles.map((f,i)=>`<div class="fitem"><span class="fname">📄 ${f.name}</span><span class="fsz">${(f.size/1024).toFixed(1)}KB</span><span class="frm" onclick="rmFile(${i})">✕</span></div>`).join('');
+}
+function rmFile(i){pendingFiles.splice(i,1);renderFQ();}
+async function procUpload(){
+  const pw=document.getElementById('up-pw').value;
+  const msg=document.getElementById('up-msg');
+  if(pw!=='Abc123@'){msg.innerHTML='<div class="msg error">❌ Incorrect password. Access denied.</div>';return;}
+  if(!pendingFiles.length){msg.innerHTML='<div class="msg error">❌ Please select at least one CSV file.</div>';return;}
+  const mode=document.querySelector('input[name="um"]:checked').value;
+  document.getElementById('up-btn').disabled=true;
+  document.getElementById('up-prog-sec').style.display='block';
+  const bar=document.getElementById('up-prog-bar'),pt=document.getElementById('up-prog-txt');
+  let allRows=[],processed=0;
+  for(const f of pendingFiles){
+    await new Promise(res=>{Papa.parse(f,{header:true,skipEmptyLines:true,complete:(r)=>{allRows=[...allRows,...r.data.map(parseR).filter(Boolean)];processed++;const pct=Math.round((processed/pendingFiles.length)*100);bar.style.width=pct+'%';pt.textContent=pct+'%';res();}});});
+  }
+  if(!allRows.length){msg.innerHTML='<div class="msg error">❌ No valid data. Check column headers.</div>';document.getElementById('up-btn').disabled=false;return;}
+  if(mode==='replace')DB=allRows;else DB=[...DB,...allRows];
+  svDB();popGF();renderAll();
+  msg.innerHTML=`<div class="msg success">✓ ${pendingFiles.length} file(s) → ${allRows.length} records ${mode==='replace'?'loaded':'added'}!</div>`;
+  showN(`✓ ${allRows.length} records ${mode==='replace'?'loaded':'added'}`);
+  document.getElementById('up-btn').disabled=false;
+  setTimeout(()=>closeM('up-modal'),1800);
+}
+function dlFmt(){
+  const b=new Blob(['PRODUCTS,Ex-Fac. Price,Team Name,Distributor Name,Jan-26,JAN AS AVERAGE,AVG x 2.1,Closing Stock,TOTAL ORDER,6-Feb,12-Feb,Invoice,60 Day inventory\nProduct Name,100.00,Team Alpha,Distributor ABC,50,50,105,20,85,30,55,80,15'],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='shaigan_format.csv';a.click();showN('✓ Format downloaded');
+}
+
+// ADMIN
+function openAdmin(){openM('adm-modal');document.getElementById('adm-login').style.display='block';document.getElementById('adm-panel').style.display='none';document.getElementById('adm-pw').value='';document.getElementById('adm-lmsg').innerHTML='';}
+function chkAdm(){
+  if(document.getElementById('adm-pw').value!=='Abc@123'){document.getElementById('adm-lmsg').innerHTML='<div class="msg error">❌ Incorrect admin password.</div>';return;}
+  document.getElementById('adm-login').style.display='none';
+  document.getElementById('adm-panel').style.display='block';
+  document.getElementById('tg').value=settings.tG;document.getElementById('to').value=settings.tO;document.getElementById('sm').value=settings.sm;document.getElementById('td').value=settings.td;
+  document.getElementById('db-stats').textContent=`${DB.length} SKU records | ${[...new Set(DB.map(r=>r.distributor))].length} Distributors | ${[...new Set(DB.map(r=>r.team))].length} Teams`;
+  ['dark','medium','light'].forEach(t=>document.getElementById('tsw-'+t).classList.toggle('active',settings.theme===t));
+}
+function admSec(id,btn){
+  ['theme','thresholds','branding','data'].forEach(s=>{const el=document.getElementById('adm-'+s);if(el)el.style.display='none';});
+  document.querySelectorAll('.adm-mi').forEach(el=>el.classList.remove('active'));
+  document.getElementById('adm-'+id).style.display='block';btn.classList.add('active');
+}
+function setTheme(name,silent=false){
+  const b=document.getElementById('body-root');
+  b.classList.remove('theme-light','theme-medium');
+  if(name==='light')b.classList.add('theme-light');
+  else if(name==='medium')b.classList.add('theme-medium');
+  settings.theme=name;svSet();
+  ['dark','medium','light'].forEach(t=>{const el=document.getElementById('tsw-'+t);if(el)el.classList.toggle('active',t===name);});
+  if(!silent){showN(`✓ Theme: ${name.toUpperCase()}`);setTimeout(()=>renderAll(),80);}
+}
+function setAccent(c){document.documentElement.style.setProperty('--accent',c);settings.accent=c;svSet();showN('✓ Accent updated');}
+function applyThr(){settings.tG=parseFloat(document.getElementById('tg').value)||80;settings.tO=parseFloat(document.getElementById('to').value)||60;settings.sm=parseFloat(document.getElementById('sm').value)||2;settings.td=parseFloat(document.getElementById('td').value)||60;svSet();renderAll();showN('✓ Thresholds updated');closeM('adm-modal');}
+function applyBrand(){
+  const co=document.getElementById('bn-co').value||'Shaigan Pharma';
+  const sub=document.getElementById('bn-sub').value||'Distribution Effectiveness Monitor';
+  const wm2=document.getElementById('bn-wm').value;
+  document.getElementById('logo-text').textContent=co;
+  document.getElementById('logo-sub').textContent=sub;
+  document.title=co+' — '+sub;
+  document.getElementById('wm').innerHTML=wm2+' | <span id="wm-date">'+new Date().toLocaleDateString()+'</span>';
+  // Apply logo if selected
+  const prev=document.getElementById('logo-preview');
+  if(prev&&prev.src&&prev.style.display!=='none'){
+    const img=document.getElementById('logo-img');
+    if(img){img.src=prev.src;img.style.display='block';}
+    settings.logoSrc=prev.src; svSet();
+  }
+  showN('✓ Branding updated');closeM('adm-modal');
+}
+function previewLogo(inp){
+  if(!inp.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const prev=document.getElementById('logo-preview');
+    const ph=document.getElementById('logo-preview-placeholder');
+    if(prev){prev.src=e.target.result;prev.style.display='block';if(ph)ph.style.display='none';}
+  };
+  reader.readAsDataURL(inp.files[0]);
+}
+function resetLogo(){
+  const img=document.getElementById('logo-img');
+  const prev=document.getElementById('logo-preview');
+  const ph=document.getElementById('logo-preview-placeholder');
+  if(img){img.src='';img.style.display='none';}
+  const ico=document.getElementById('logo-ico');
+  if(ico){ico.innerHTML='<span style="background:linear-gradient(135deg,var(--accent),var(--accent2));width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;font-family:Syne,sans-serif;color:#fff;border-radius:9px;">'+((document.getElementById('bn-co')||{}).value||'S').charAt(0)+'</span>';}
+  if(prev){prev.src='';prev.style.display='none';}if(ph){ph.style.display='block';}
+  settings.logoSrc='';svSet();showN('Logo removed');
+}
+function clearDB(){if(!confirm('Clear ALL data?'))return;DB=[];GF={team:'',dist:'',prod:''};svDB();popGF();renderAll();showN('Database cleared');closeM('adm-modal');}
+function expData(){
+  const b=new Blob(['PRODUCTS,Ex-Fac. Price,Team Name,Distributor Name,Monthly Avg,AVG x 2.1,Closing Stock,Invoice\n'+DB.map(r=>`${r.product},${r.price},${r.team},"${r.distributor}",${r.monthly},${r.avg21},${r.closingStock},${r.invoice}`).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='shaigan_export.csv';a.click();showN('✓ Exported');
+}
+function resetSet(){settings={tG:80,tO:60,sm:2,td:60,accent:'',theme:'dark'};svSet();document.documentElement.style.removeProperty('--accent');setTheme('dark');renderAll();showN('✓ Reset');closeM('adm-modal');}
+
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.movl').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+function showN(msg,err=false){const n=document.getElementById('notif');n.textContent=msg;n.className='show'+(err?' err':'');setTimeout(()=>n.className='',2600);}
+
+init();
+</script>
+</body>
+</html>
