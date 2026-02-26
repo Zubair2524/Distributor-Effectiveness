@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shaigan Pharma — Distribution Effectiveness Monitor</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Roboto:wght@300;400;500;600&family=Open+Sans:wght@300;400;500;600&family=Lato:wght@300;400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -36,7 +39,7 @@ body.theme-light {
   --green:#008855; --orange:#cc6600; --red:#bb1122; --purple:#6622bb;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body,Calibri,'Outfit',sans-serif);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
 body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 10%,rgba(0,100,200,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,180,255,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
 body.theme-light::before,body.theme-medium::before{background:none;}
 
@@ -89,11 +92,23 @@ header{background:var(--card);border-bottom:1px solid var(--border);padding:0 24
 .kpi-card.red::before{background:linear-gradient(90deg,var(--red),transparent);}
 .kpi-card.purple::before{background:linear-gradient(90deg,var(--purple),transparent);}
 .kpi-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
-.kpi-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;margin-bottom:7px;}
-.kpi-val{font-size:24px;font-weight:700;font-family:'Syne',sans-serif;line-height:1.1;}
+.kpi-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;font-family:'DM Mono',monospace;margin-bottom:7px;font-weight:600;}
+.kpi-val{font-size:24px;font-weight:700;font-family:var(--font-display,'Syne',sans-serif);line-height:1.1;}
 .kpi-val.blue{color:var(--accent);}.kpi-val.green{color:var(--green);}.kpi-val.orange{color:var(--orange);}.kpi-val.red{color:var(--red);}.kpi-val.purple{color:var(--purple);}
-.kpi-sub{font-size:10px;color:var(--text3);margin-top:4px;}
-.kpi-ico{position:absolute;right:12px;top:12px;font-size:18px;opacity:0.2;}
+.kpi-sub{font-size:11px;color:var(--text);opacity:0.75;margin-top:4px;font-weight:500;}
+.kpi-val2{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;margin-top:3px;padding:3px 7px;border-radius:5px;display:inline-block;}
+.kpi-val2.blue{color:var(--accent);background:rgba(0,212,255,0.1);}
+.kpi-val2.green{color:var(--green);background:rgba(0,229,160,0.1);}
+.kpi-val2.orange{color:var(--orange);background:rgba(255,149,0,0.1);}
+.kpi-val2.red{color:var(--red);background:rgba(255,71,87,0.1);}
+.kpi-val2.purple{color:var(--purple);background:rgba(168,85,247,0.1);}
+.kpi-ico{position:absolute;right:12px;top:10px;font-size:24px;opacity:1;line-height:1;}
+.kpi-card.blue .kpi-ico{filter:drop-shadow(0 0 6px rgba(0,212,255,0.7));}
+.kpi-card.green .kpi-ico{filter:drop-shadow(0 0 6px rgba(0,229,160,0.7));}
+.kpi-card.orange .kpi-ico{filter:drop-shadow(0 0 6px rgba(255,149,0,0.7));}
+.kpi-card.red .kpi-ico{filter:drop-shadow(0 0 6px rgba(255,71,87,0.7));}
+.kpi-card.purple .kpi-ico{filter:drop-shadow(0 0 6px rgba(168,85,247,0.7));}
+.kpi-unit{font-size:11px;font-weight:600;opacity:0.85;margin-left:2px;}
 
 /* LAYOUT */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
@@ -246,6 +261,19 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 .empty{text-align:center;padding:45px 20px;}
 .empty-ico{font-size:36px;margin-bottom:10px;opacity:0.25;}
 .empty-txt{color:var(--text3);font-size:12px;}
+/* REPORT CARDS */
+.rpt-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:4px;}
+.rpt-card:hover{border-color:var(--accent);background:rgba(0,212,255,0.04);transform:translateY(-1px);}
+.rpt-ico{font-size:22px;line-height:1;}
+.rpt-name{font-weight:700;font-size:13px;color:var(--text);}
+.rpt-desc{font-size:11px;color:var(--text3);line-height:1.4;flex:1;}
+.rpt-btns{display:flex;gap:5px;margin-top:6px;}
+/* COL MAP */
+.col-row{display:flex;align-items:center;gap:6px;background:var(--bg2);border-radius:6px;padding:5px 7px;}
+.col-row input{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:11px;padding:4px 7px;outline:none;flex:1;}
+.col-row input:focus{border-color:var(--accent);}
+.col-req{font-size:9px;color:var(--orange);font-weight:700;min-width:12px;}
+.col-rm{cursor:pointer;color:var(--red);font-size:14px;opacity:0.7;padding:0 3px;}.col-rm:hover{opacity:1;}
 
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -269,6 +297,7 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
   <div class="hdr-right">
     <div class="badge-live"><div class="dot-live"></div><span id="hdr-date">—</span></div>
     <button class="btn btn-ghost" onclick="openUpload()">⬆ Upload Data</button>
+    <button class="btn btn-ghost" onclick="openReports()" style="color:var(--purple);border-color:rgba(168,85,247,0.4);">📋 Reports</button>
     <button class="btn btn-warn" onclick="openAdmin()">⚙ Admin</button>
     <button class="btn btn-primary" onclick="dlFmt()">⬇ Format</button>
   </div>
@@ -304,11 +333,41 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 <!-- OVERVIEW -->
 <div id="tab-overview" class="tab-page active">
   <div class="kpi-grid">
-    <div class="kpi-card blue"><div class="kpi-ico">📦</div><div class="kpi-lbl">Planned (60-Day Target)</div><div class="kpi-val blue" id="kpi-p">—</div><div class="kpi-sub">Units</div></div>
-    <div class="kpi-card green"><div class="kpi-ico">✅</div><div class="kpi-lbl">Actual Invoiced</div><div class="kpi-val green" id="kpi-i">—</div><div class="kpi-sub">Units invoiced</div></div>
-    <div class="kpi-card orange"><div class="kpi-ico">⚡</div><div class="kpi-lbl">Replenishment %</div><div class="kpi-val orange" id="kpi-r">—</div><div class="kpi-sub">Planned vs Actual</div></div>
-    <div class="kpi-card red"><div class="kpi-ico">⚠️</div><div class="kpi-lbl">Total Due Amount</div><div class="kpi-val red" id="kpi-d">—</div><div class="kpi-sub">PKR value of gap</div></div>
-    <div class="kpi-card purple"><div class="kpi-ico">🐌</div><div class="kpi-lbl">Slow-Moving SKUs</div><div class="kpi-val purple" id="kpi-s">—</div><div class="kpi-sub">Stock &gt; 2× avg</div></div>
+    <div class="kpi-card blue">
+      <div class="kpi-ico">📦</div>
+      <div class="kpi-lbl">Planned (60-Day Target)</div>
+      <div class="kpi-val blue" id="kpi-p">—<span class="kpi-unit" id="kpi-p-unit"> Units</span></div>
+      <div class="kpi-val2 blue" id="kpi-p-val">—</div>
+      <div class="kpi-sub" id="kpi-p-sub">60-day replenishment target</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-ico">✅</div>
+      <div class="kpi-lbl">Actual Invoiced</div>
+      <div class="kpi-val green" id="kpi-i">—<span class="kpi-unit" id="kpi-i-unit"> Units</span></div>
+      <div class="kpi-val2 green" id="kpi-i-val">—</div>
+      <div class="kpi-sub" id="kpi-i-sub">Units dispatched to distributor</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-ico">⚡</div>
+      <div class="kpi-lbl">Replenishment %</div>
+      <div class="kpi-val orange" id="kpi-r">—</div>
+      <div class="kpi-val2 orange" id="kpi-r-val">—</div>
+      <div class="kpi-sub" id="kpi-r-sub">Planned vs Actual achievement</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-ico">💰</div>
+      <div class="kpi-lbl">Total Due Amount</div>
+      <div class="kpi-val red" id="kpi-d">—</div>
+      <div class="kpi-val2 red" id="kpi-d-val">—</div>
+      <div class="kpi-sub" id="kpi-d-sub">Pending replenishment value</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-ico">🐌</div>
+      <div class="kpi-lbl">Slow-Moving SKUs</div>
+      <div class="kpi-val purple" id="kpi-s">—<span class="kpi-unit" id="kpi-s-unit"> SKUs</span></div>
+      <div class="kpi-val2 purple" id="kpi-s-val">—</div>
+      <div class="kpi-sub" id="kpi-s-sub">Stock &gt; 2× monthly average</div>
+    </div>
   </div>
   <div class="g2">
     <div class="panel">
@@ -421,8 +480,12 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
     <div class="pw"><div class="uprog" id="up-prog-bar"></div></div>
   </div>
   <div style="background:var(--bg3);border-radius:7px;padding:9px;margin:10px 0;">
-    <div style="font-size:9px;color:var(--text3);margin-bottom:6px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;">Required Column Headers</div>
-    <div class="tagrow"><span class="tag">PRODUCTS</span><span class="tag">Ex-Fac. Price</span><span class="tag">Team Name</span><span class="tag">Distributor Name</span><span class="tag">JAN AS AVERAGE</span><span class="tag">AVG x 2.1</span><span class="tag">Closing Stock</span><span class="tag">Invoice</span><span class="tag">60 Day inventory</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;">Column Mapping — Add / Remove / Rename Headers</div>
+      <button class="btn btn-ghost" onclick="addColMap()" style="font-size:10px;padding:3px 8px;">+ Add Column</button>
+    </div>
+    <div id="col-map-list" style="display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;"></div>
+    <div style="margin-top:8px;font-size:9px;color:var(--text3);">⭐ = Required field. Drag rows to reorder. Changes affect format download only.</div>
   </div>
   <div id="up-msg"></div>
   <div style="display:flex;gap:7px;justify-content:space-between;align-items:center;margin-top:12px;">
@@ -447,6 +510,7 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
     <div class="adm-g">
       <div class="adm-sb">
         <div class="adm-mi active" onclick="admSec('theme',this)">🎨 Theme</div>
+        <div class="adm-mi" onclick="admSec('fonts',this)">🔤 Fonts</div>
         <div class="adm-mi" onclick="admSec('thresholds',this)">📏 Thresholds</div>
         <div class="adm-mi" onclick="admSec('branding',this)">🏷 Branding</div>
         <div class="adm-mi" onclick="admSec('data',this)">💾 Data Mgmt</div>
@@ -480,6 +544,53 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
             <div class="csw" style="background:#0070cc" onclick="setAccent('#0070cc')"></div>
             <div class="csw" style="background:#ffd43b" onclick="setAccent('#ffd43b')"></div>
             <input type="color" value="#00d4ff" onchange="setAccent(this.value)" style="width:28px;height:28px;border-radius:5px;border:none;cursor:pointer;padding:0;">
+          </div>
+        </div>
+
+        <!-- FONTS -->
+        <div id="adm-fonts" style="display:none;">
+          <div class="adm-ttl">Font Settings</div>
+          <div class="fg">
+            <label class="flbl">Dashboard Body Font</label>
+            <select class="finp" id="fn-body" onchange="applyFont('body',this.value)">
+              <option value="Calibri">Calibri (Default)</option>
+              <option value="Inter">Inter</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Open Sans">Open Sans</option>
+              <option value="Lato">Lato</option>
+              <option value="Poppins">Poppins</option>
+              <option value="Arial">Arial</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Verdana">Verdana</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="flbl">Display / Heading Font</label>
+            <select class="finp" id="fn-display" onchange="applyFont('display',this.value)">
+              <option value="Calibri">Calibri</option>
+              <option value="Syne" selected>Syne (Default)</option>
+              <option value="Inter">Inter</option>
+              <option value="Poppins">Poppins</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Arial Black">Arial Black</option>
+              <option value="Trebuchet MS">Trebuchet MS</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="flbl">Font Size Scale</label>
+            <select class="finp" id="fn-size" onchange="applyFontSize(this.value)">
+              <option value="0.9">Compact (90%)</option>
+              <option value="1" selected>Normal (100%)</option>
+              <option value="1.1">Large (110%)</option>
+              <option value="1.2">Extra Large (120%)</option>
+            </select>
+          </div>
+          <div style="padding:10px;background:var(--bg2);border-radius:7px;font-size:12px;color:var(--text2);line-height:1.7;" id="font-preview">
+            <span style="font-size:15px;font-weight:700;">Preview Heading</span><br>
+            This is body text in the selected font. PKR 1,23,456 · Replenishment 87.5%<br>
+            <span style="opacity:0.6;font-size:10px;">LABEL · UPPERCASE SMALL TEXT</span>
           </div>
         </div>
 
@@ -537,6 +648,83 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 </div>
 </div>
 
+
+<!-- REPORTS MODAL -->
+<div class="movl" id="rep-modal">
+<div class="modal" style="max-width:780px;min-width:520px;">
+  <button class="mclose" onclick="closeM('rep-modal')">✕</button>
+  <div class="mtitle">📋 Reports Centre</div>
+  <div class="msub">Generate professional reports in PDF or Excel. All reports reflect current active filters.</div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;"><input type="checkbox" id="rpt-units" checked style="accent-color:var(--accent)"> Show Units</label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;"><input type="checkbox" id="rpt-value" checked style="accent-color:var(--accent)"> Show PKR Value</label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;"><input type="checkbox" id="rpt-pct" checked style="accent-color:var(--accent)"> Show % Achieved</label>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="rpt-card" onclick="genReport('replenishment-summary','pdf')">
+      <div class="rpt-ico">📊</div>
+      <div class="rpt-name">Replenishment Summary</div>
+      <div class="rpt-desc">Overall planned vs actual by distributor</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('replenishment-summary','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('replenishment-summary','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('due-amount','pdf')">
+      <div class="rpt-ico">💰</div>
+      <div class="rpt-name">Due Amount Report</div>
+      <div class="rpt-desc">Product-wise pending replenishment values</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('due-amount','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('due-amount','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('slow-moving','pdf')">
+      <div class="rpt-ico">🐌</div>
+      <div class="rpt-name">Slow-Moving Inventory</div>
+      <div class="rpt-desc">SKUs with excess stock beyond 2× monthly avg</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('slow-moving','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('slow-moving','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('team-performance','pdf')">
+      <div class="rpt-ico">🏆</div>
+      <div class="rpt-name">Team Performance</div>
+      <div class="rpt-desc">Planned vs invoiced achievement by team</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('team-performance','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('team-performance','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('distributor-scorecard','pdf')">
+      <div class="rpt-ico">🏢</div>
+      <div class="rpt-name">Distributor Scorecard</div>
+      <div class="rpt-desc">Full scorecard with status & priority ratings</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('distributor-scorecard','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('distributor-scorecard','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('critical-products','pdf')">
+      <div class="rpt-ico">🚨</div>
+      <div class="rpt-name">Critical Products</div>
+      <div class="rpt-desc">Products below threshold needing urgent action</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('critical-products','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('critical-products','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('stock-coverage','pdf')">
+      <div class="rpt-ico">📦</div>
+      <div class="rpt-name">Stock Coverage Analysis</div>
+      <div class="rpt-desc">Days of stock on hand vs 60-day target</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('stock-coverage','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('stock-coverage','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('product-master','pdf')">
+      <div class="rpt-ico">📋</div>
+      <div class="rpt-name">Product Master List</div>
+      <div class="rpt-desc">All products with pricing and allocation data</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('product-master','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('product-master','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('follow-up','pdf')">
+      <div class="rpt-ico">📞</div>
+      <div class="rpt-name">Follow-Up Action List</div>
+      <div class="rpt-desc">Prioritised list for distributor follow-ups</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('follow-up','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('follow-up','xlsx')">Excel</button></div>
+    </div>
+    <div class="rpt-card" onclick="genReport('full-database','pdf')">
+      <div class="rpt-ico">🗄️</div>
+      <div class="rpt-name">Full Database Export</div>
+      <div class="rpt-desc">Complete dataset with all computed fields</div>
+      <div class="rpt-btns"><button class="btn btn-primary" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('full-database','pdf')">PDF</button><button class="btn btn-ghost" style="font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();genReport('full-database','xlsx')">Excel</button></div>
+    </div>
+  </div>
+  <div id="rpt-status" style="margin-top:12px;"></div>
+</div>
+</div>
 <script>
 Chart.defaults.font.family="'Outfit',sans-serif";
 
@@ -596,6 +784,7 @@ function init(){
   if(settings.theme)setTheme(settings.theme,true);
   if(settings.logoSrc){const img=document.getElementById('logo-img');if(img){img.src=settings.logoSrc;img.style.display='block';}}
   if(settings.accent)document.documentElement.style.setProperty('--accent',settings.accent);
+  initFonts();
   popGF(); renderAll();
 }
 
@@ -669,31 +858,7 @@ function renderAll(){
   document.getElementById('ov-badges').innerHTML=h;
 }
 
-function renderKPIs(data){
-  let tp=0,ti=0,td=0,sc=0;
-  data.forEach(r=>{tp+=tgt(r);ti+=r.invoice;td+=dv(r);if(isSlw(r))sc++;});
-  const pct=tp>0?(ti/tp)*100:0;
-  document.getElementById('kpi-p').textContent=fmt(tp);
-  document.getElementById('kpi-i').textContent=fmt(ti);
-  document.getElementById('kpi-r').textContent=fP(pct);
-  document.getElementById('kpi-d').textContent='PKR '+fmt(td);
-  document.getElementById('kpi-s').textContent=sc;
-  document.getElementById('sp').textContent=fmt(tp);
-  document.getElementById('si').textContent=fmt(ti);
-  document.getElementById('sg').textContent=fmt(tp-ti);
-  document.getElementById('dpct').textContent=pct.toFixed(1)+'%';
-  document.getElementById('dpct').style.color=pct>=settings.tG?'var(--green)':pct>=settings.tO?'var(--orange)':'var(--red)';
-  document.getElementById('ab').style.width=Math.min(100,pct).toFixed(0)+'%';
-  document.getElementById('ab').className='pb '+pbC(pct);
-  document.getElementById('gb').style.width=Math.min(100,100-pct).toFixed(0)+'%';
-  // slow kpis
-  const sd=data.filter(isSlw);let sv=0,wp='',wv=0;
-  sd.forEach(r=>{const ev=exS(r)*r.price;sv+=ev;if(ev>wv){wv=ev;wp=r.product;}});
-  document.getElementById('sl-cnt').textContent=sd.length;
-  document.getElementById('sl-val').textContent='PKR '+fmt(sv);
-  document.getElementById('sl-worst').textContent=wp||'—';
-  document.getElementById('sl-wsub').textContent=wp?'PKR '+fmt(wv)+' excess':'';
-}
+
 
 function renderPills(){
   const teams=[...new Set(DB.map(r=>r.team))].sort();
@@ -891,9 +1056,12 @@ function chkAdm(){
   document.getElementById('tg').value=settings.tG;document.getElementById('to').value=settings.tO;document.getElementById('sm').value=settings.sm;document.getElementById('td').value=settings.td;
   document.getElementById('db-stats').textContent=`${DB.length} SKU records | ${[...new Set(DB.map(r=>r.distributor))].length} Distributors | ${[...new Set(DB.map(r=>r.team))].length} Teams`;
   ['dark','medium','light'].forEach(t=>document.getElementById('tsw-'+t).classList.toggle('active',settings.theme===t));
+  const fnB=document.getElementById('fn-body');if(fnB)fnB.value=settings.fontBody||'Calibri';
+  const fnD=document.getElementById('fn-display');if(fnD)fnD.value=settings.fontDisplay||'Syne';
+  const fnS=document.getElementById('fn-size');if(fnS)fnS.value=settings.fontScale||'1';
 }
 function admSec(id,btn){
-  ['theme','thresholds','branding','data'].forEach(s=>{const el=document.getElementById('adm-'+s);if(el)el.style.display='none';});
+  ['theme','fonts','thresholds','branding','data'].forEach(s=>{const el=document.getElementById('adm-'+s);if(el)el.style.display='none';});
   document.querySelectorAll('.adm-mi').forEach(el=>el.classList.remove('active'));
   document.getElementById('adm-'+id).style.display='block';btn.classList.add('active');
 }
@@ -956,6 +1124,460 @@ function openM(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.movl').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 function showN(msg,err=false){const n=document.getElementById('notif');n.textContent=msg;n.className='show'+(err?' err':'');setTimeout(()=>n.className='',2600);}
+
+// ══════════════ FONT MANAGEMENT ══════════════
+function applyFont(type, val){
+  if(type==='body'){
+    document.documentElement.style.setProperty('--font-body', `'${val}',Calibri,sans-serif`);
+    settings.fontBody=val; Chart.defaults.font.family=val;
+  } else {
+    document.documentElement.style.setProperty('--font-display', `'${val}',Calibri,sans-serif`);
+    settings.fontDisplay=val;
+  }
+  const prev=document.getElementById('font-preview');
+  if(prev){
+    prev.style.fontFamily=`'${val}',Calibri,sans-serif`;
+    const h=prev.querySelector('span');
+    if(h&&type==='display')h.style.fontFamily=`'${val}',Calibri,sans-serif`;
+  }
+  svSet(); showN(`✓ Font: ${val}`);
+}
+function applyFontSize(scale){
+  document.documentElement.style.fontSize = (parseFloat(scale)*16)+'px';
+  settings.fontScale=scale; svSet(); showN(`✓ Size: ${Math.round(parseFloat(scale)*100)}%`);
+}
+function initFonts(){
+  const fb=settings.fontBody||'Calibri';
+  const fd=settings.fontDisplay||'Syne';
+  const fs=settings.fontScale||'1';
+  document.documentElement.style.setProperty('--font-body',`'${fb}',Calibri,sans-serif`);
+  document.documentElement.style.setProperty('--font-display',`'${fd}',sans-serif`);
+  if(fs!=='1') document.documentElement.style.fontSize=(parseFloat(fs)*16)+'px';
+  Chart.defaults.font.family=fb;
+  const selB=document.getElementById('fn-body');
+  const selD=document.getElementById('fn-display');
+  const selS=document.getElementById('fn-size');
+  if(selB)selB.value=fb; if(selD)selD.value=fd; if(selS)selS.value=fs;
+}
+
+// ══════════════ COLUMN MAPPING ══════════════
+const DEFAULT_COLS = [
+  {label:'PRODUCTS',key:'product',req:true},
+  {label:'Ex-Fac. Price',key:'price',req:true},
+  {label:'Team Name',key:'team',req:true},
+  {label:'Distributor Name',key:'distributor',req:true},
+  {label:'JAN AS AVERAGE',key:'monthly',req:true},
+  {label:'AVG x 2.1',key:'avg21',req:false},
+  {label:'Closing Stock',key:'closingStock',req:true},
+  {label:'Invoice',key:'invoice',req:true},
+  {label:'60 Day inventory',key:'inventory60',req:false},
+  {label:'TOTAL ORDER',key:'totalOrder',req:false},
+];
+let colMap = JSON.parse(JSON.stringify(DEFAULT_COLS));
+
+function renderColMap(){
+  const el=document.getElementById('col-map-list');
+  if(!el) return;
+  el.innerHTML=colMap.map((c,i)=>`
+    <div class="col-row">
+      <span class="col-req">${c.req?'⭐':''}</span>
+      <input value="${c.label}" placeholder="Column header name" onchange="colMap[${i}].label=this.value">
+      <span style="font-size:9px;color:var(--text3);white-space:nowrap;">→ ${c.key}</span>
+      ${!c.req?`<span class="col-rm" onclick="removeCol(${i})">✕</span>`:'<span style="width:20px"></span>'}
+    </div>`).join('');
+}
+function addColMap(){
+  colMap.push({label:'New Column',key:'custom_'+Date.now(),req:false});
+  renderColMap();
+}
+function removeCol(i){
+  colMap.splice(i,1); renderColMap();
+}
+function openUpload(){
+  openM('up-modal');
+  pendingFiles=[];
+  document.getElementById('up-msg').innerHTML='';
+  document.getElementById('up-pw').value='';
+  document.getElementById('dtxt').textContent='Click or drag CSV files here';
+  document.getElementById('fq-sec').style.display='none';
+  document.getElementById('up-prog-sec').style.display='none';
+  renderColMap();
+}
+
+// ══════════════ KPI with units ══════════════
+function renderKPIs(data){
+  let tp=0,ti=0,td=0,sc=0;
+  data.forEach(r=>{tp+=tgt(r);ti+=r.invoice;td+=dv(r);if(isSlw(r))sc++;});
+  const pct=tp>0?(ti/tp)*100:0;
+  // Planned — units + PKR value
+  const pe=document.getElementById('kpi-p');
+  if(pe){ const u=document.getElementById('kpi-p-unit'); if(u)u.remove(); pe.textContent=fmt(tp); const s=document.createElement('span'); s.className='kpi-unit'; s.id='kpi-p-unit'; s.textContent=' Units'; pe.appendChild(s); }
+  const pv=document.getElementById('kpi-p-val');
+  if(pv){ const tpVal=data.reduce((a,r)=>a+tgt(r)*r.price,0); pv.textContent='PKR '+fmt(tpVal); }
+  // Invoiced — units + PKR value
+  const ie=document.getElementById('kpi-i');
+  if(ie){ const u=document.getElementById('kpi-i-unit'); if(u)u.remove(); ie.textContent=fmt(ti); const s=document.createElement('span'); s.className='kpi-unit'; s.id='kpi-i-unit'; s.textContent=' Units'; ie.appendChild(s); }
+  const iv=document.getElementById('kpi-i-val');
+  if(iv){ const tiVal=data.reduce((a,r)=>a+r.invoice*r.price,0); iv.textContent='PKR '+fmt(tiVal); }
+  // Replenishment % — units gap
+  const re=document.getElementById('kpi-r'); if(re) re.textContent=fP(pct);
+  const rv=document.getElementById('kpi-r-val');
+  if(rv){ rv.textContent=fmt(Math.max(0,tp-ti))+' Units Gap'; }
+  // Due — PKR + units
+  const de=document.getElementById('kpi-d'); if(de) de.textContent='PKR '+fmt(td);
+  const dv2=document.getElementById('kpi-d-val');
+  if(dv2){ dv2.textContent=fmt(Math.max(0,tp-ti))+' Units Pending'; }
+  const ds=document.getElementById('kpi-d-sub'); if(ds) ds.textContent='Pending replenishment value';
+  // Slow SKUs — count + excess value
+  const se=document.getElementById('kpi-s');
+  if(se){ const u=document.getElementById('kpi-s-unit'); if(u)u.remove(); se.textContent=sc; const s=document.createElement('span'); s.className='kpi-unit'; s.id='kpi-s-unit'; s.textContent=' SKUs'; se.appendChild(s); }
+  const sv2=document.getElementById('kpi-s-val');
+  if(sv2){ const slowVal=data.filter(isSlw).reduce((a,r)=>a+exS(r)*r.price,0); sv2.textContent='PKR '+fmt(slowVal)+' Excess'; }
+  document.getElementById('sp').textContent=fmt(tp)+' units';
+  document.getElementById('si').textContent=fmt(ti)+' units';
+  document.getElementById('sg').textContent=fmt(tp-ti)+' units';
+  document.getElementById('dpct').textContent=pct.toFixed(1)+'%';
+  document.getElementById('dpct').style.color=pct>=settings.tG?'var(--green)':pct>=settings.tO?'var(--orange)':'var(--red)';
+  document.getElementById('ab').style.width=Math.min(100,pct).toFixed(0)+'%';
+  document.getElementById('ab').className='pb '+pbC(pct);
+  document.getElementById('gb').style.width=Math.min(100,100-pct).toFixed(0)+'%';
+  // slow tab kpis
+  const sdArr=data.filter(isSlw);let slowExVal=0,wp='',wv=0;
+  sdArr.forEach(r=>{const ev=exS(r)*r.price;slowExVal+=ev;if(ev>wv){wv=ev;wp=r.product;}});
+  document.getElementById('sl-cnt').textContent=sdArr.length+' SKUs';
+  document.getElementById('sl-val').textContent='PKR '+fmt(slowExVal);
+  document.getElementById('sl-worst').textContent=wp||'—';
+  document.getElementById('sl-wsub').textContent=wp?'PKR '+fmt(wv)+' excess value':'';
+}
+
+// ══════════════ FORMAT DOWNLOAD with col map ══════════════
+function dlFmt(){
+  const headers=colMap.map(c=>c.label).join(',');
+  const sample=colMap.map(c=>{
+    const ex={product:'Product Name',price:'100.00',team:'Team Alpha',distributor:'Distributor ABC',monthly:'50',avg21:'105',closingStock:'20',invoice:'80',inventory60:'15',totalOrder:'85'};
+    return ex[c.key]||'0';
+  }).join(',');
+  const b=new Blob([headers+'\n'+sample],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='shaigan_format.csv';a.click();showN('✓ Format downloaded');
+}
+
+// ══════════════ ENHANCED PARSE using colMap ══════════════
+function parseRWithMap(r){
+  const c=v=>{if(v===undefined||v===null||v==='')return 0;return parseFloat(String(v).replace(/,/g,''))||0;};
+  // Try to find product by mapped label or fallback
+  const findVal=(keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
+  // Build lookup from colMap
+  const mapped={};
+  colMap.forEach(col=>{const v=findVal([col.label]);mapped[col.key]=v;});
+  const p=mapped.product||r['PRODUCTS']||r['Product'];
+  if(!p||!String(p).trim())return null;
+  return{
+    product:String(p).trim(),
+    price:c(mapped.price||r['Ex-Fac. Price']||r['Price']),
+    team:String(mapped.team||r['Team Name']||r['Team']||'').trim(),
+    distributor:String(mapped.distributor||r['Distributor Name']||r['Distributor']||'').trim(),
+    monthly:c(mapped.monthly||r['JAN AS AVERAGE']||r['Monthly Avg']),
+    avg21:c(mapped.avg21||r['AVG x 2.1']),
+    closingStock:c(mapped.closingStock||r['Closing Stock']),
+    invoice:c(mapped.invoice||r['Invoice']||r['Invoiced']),
+    inventory60:c(mapped.inventory60||r['60 Day inventory']),
+    totalOrder:c(mapped.totalOrder||r['TOTAL ORDER'])
+  };
+}
+
+// ══════════════ REPORTS ══════════════
+function openReports(){openM('rep-modal');}
+
+function rptOpts(){
+  return{
+    units:document.getElementById('rpt-units')?.checked!==false,
+    value:document.getElementById('rpt-value')?.checked!==false,
+    pct:document.getElementById('rpt-pct')?.checked!==false
+  };
+}
+
+function rptHdr(){
+  const co=document.getElementById('logo-text')?.textContent||'Shaigan Pharma';
+  const sub=document.getElementById('logo-sub')?.textContent||'Distribution Effectiveness Monitor';
+  const filters=[];
+  if(GF.team)filters.push('Team: '+GF.team);
+  if(GF.dist)filters.push('Dist: '+GF.dist);
+  if(GF.prod)filters.push('Product: '+GF.prod);
+  return{co,sub,date:new Date().toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'}),filters:filters.join(' | ')||'All Data'};
+}
+
+const REPORT_DEFS = {
+  'replenishment-summary':{
+    title:'Replenishment Summary Report',
+    cols:['Distributor','Team','Planned (Units)','Invoiced (Units)','Gap (Units)','Rep %','Due Value (PKR)','Status'],
+    rows:(data,o)=>dSumm(data).map(d=>[
+      d.distributor, d.teams,
+      o.units?fmt(d.planned):'—', o.units?fmt(d.invoiced):'—', o.units?fmt(d.planned-d.invoiced):'—',
+      o.pct?fP(d.pct):'—', o.value?'PKR '+fmt(d.due):'—',
+      d.pct===null?'N/A':d.pct>=settings.tG?'On Track':d.pct>=settings.tO?'Warning':'Critical'
+    ])
+  },
+  'due-amount':{
+    title:'Replenishment Due Amount Report',
+    cols:['Product','Distributor','Team','Price (PKR)','60D Target','Invoiced','Remaining','Due Value (PKR)','Priority'],
+    rows:(data,o)=>data.filter(r=>rem(r)>0).sort((a,b)=>dv(b)-dv(a)).map(r=>[
+      r.product,r.distributor,r.team,
+      o.value?'PKR '+fmt(r.price):'—',
+      o.units?fmt(tgt(r)):'—', o.units?fmt(r.invoice):'—', o.units?fmt(rem(r)):'—',
+      o.value?'PKR '+fmt(dv(r)):'—',
+      (rPct(r)||0)<settings.tO?'HIGH':(rPct(r)||0)<settings.tG?'MEDIUM':'LOW'
+    ])
+  },
+  'slow-moving':{
+    title:'Slow-Moving Inventory Report',
+    cols:['Product','Distributor','Team','Closing Stock','Monthly Avg','60D Need','Excess Units','Excess Value (PKR)','Category'],
+    rows:(data,o)=>data.filter(isSlw).sort((a,b)=>exS(b)*b.price-exS(a)*a.price).map(r=>{
+      const ratio=r.monthly>0?r.closingStock/r.monthly:0;
+      return[r.product,r.distributor,r.team,
+        o.units?fmt(r.closingStock):'—', o.units?fmt(r.monthly):'—', o.units?fmt(tgt(r)):'—',
+        o.units?fmt(exS(r)):'—', o.value?'PKR '+fmt(exS(r)*r.price):'—',
+        ratio>4?'CRITICAL':ratio>2.5?'HIGH':'MODERATE'];
+    })
+  },
+  'team-performance':{
+    title:'Team Performance Report',
+    cols:['Team','Planned (Units)','Invoiced (Units)','Gap (Units)','Achievement %','Due Value (PKR)','Distributors','Slow SKUs'],
+    rows:(data,o)=>{
+      const tm={};
+      data.forEach(r=>{
+        if(!tm[r.team])tm[r.team]={team:r.team,p:0,i:0,due:0,dists:new Set(),slow:0};
+        tm[r.team].p+=tgt(r);tm[r.team].i+=r.invoice;tm[r.team].due+=dv(r);tm[r.team].dists.add(r.distributor);if(isSlw(r))tm[r.team].slow++;
+      });
+      return Object.values(tm).sort((a,b)=>b.p-a.p).map(t=>{
+        const p=t.p>0?(t.i/t.p)*100:null;
+        return[t.team, o.units?fmt(t.p):'—', o.units?fmt(t.i):'—', o.units?fmt(t.p-t.i):'—',
+          o.pct?fP(p):'—', o.value?'PKR '+fmt(t.due):'—', t.dists.size, t.slow];
+      });
+    }
+  },
+  'distributor-scorecard':{
+    title:'Distributor Scorecard',
+    cols:['Distributor','Teams','Planned','Invoiced','Rep %','Due (PKR)','Slow SKUs','Score','Rating'],
+    rows:(data,o)=>dSumm(data).map(d=>{
+      const score=Math.round((d.pct||0)*0.7+(d.slow===0?30:d.slow<5?15:0));
+      return[d.distributor,d.teams,
+        o.units?fmt(d.planned):'—', o.units?fmt(d.invoiced):'—',
+        o.pct?fP(d.pct):'—', o.value?'PKR '+fmt(d.due):'—', d.slow,
+        score+'%', score>=80?'★★★ Excellent':score>=60?'★★ Good':'★ Needs Improvement'];
+    })
+  },
+  'critical-products':{
+    title:'Critical Products — Urgent Action Required',
+    cols:['Product','Distributor','Team','Rep %','Due Value (PKR)','Gap Units','Closing Stock','Action'],
+    rows:(data,o)=>data.filter(r=>(rPct(r)||0)<settings.tO).sort((a,b)=>dv(b)-dv(a)).map(r=>[
+      r.product,r.distributor,r.team,
+      o.pct?fP(rPct(r)):'—', o.value?'PKR '+fmt(dv(r)):'—',
+      o.units?fmt(rem(r)):'—', o.units?fmt(r.closingStock):'—',
+      'URGENT FOLLOW-UP REQUIRED'
+    ])
+  },
+  'stock-coverage':{
+    title:'Stock Coverage Analysis',
+    cols:['Product','Distributor','Team','Closing Stock','Monthly Avg','Coverage (Days)','60D Target Stock','Status'],
+    rows:(data,o)=>data.filter(r=>r.monthly>0).sort((a,b)=>(b.closingStock/b.monthly)-(a.closingStock/a.monthly)).map(r=>{
+      const days=Math.round(r.closingStock/r.monthly*30);
+      return[r.product,r.distributor,r.team,
+        o.units?fmt(r.closingStock):'—', o.units?fmt(r.monthly):'—',
+        days+' days', o.units?fmt(tgt(r)):'—',
+        days>90?'OVERSTOCKED':days>60?'ADEQUATE':days>30?'LOW':'CRITICAL'];
+    })
+  },
+  'product-master':{
+    title:'Product Master List',
+    cols:['Product','Team','Distributor','Ex-Fac Price (PKR)','Monthly Avg','60D Target','Closing Stock','Invoice','Rep %'],
+    rows:(data,o)=>data.sort((a,b)=>a.product.localeCompare(b.product)).map(r=>[
+      r.product,r.team,r.distributor,
+      o.value?'PKR '+fmt(r.price):'—',
+      o.units?fmt(r.monthly):'—', o.units?fmt(tgt(r)):'—',
+      o.units?fmt(r.closingStock):'—', o.units?fmt(r.invoice):'—',
+      o.pct?fP(rPct(r)):'—'
+    ])
+  },
+  'follow-up':{
+    title:'Distributor Follow-Up Action List',
+    cols:['Priority','Distributor','Team','Rep %','Due (PKR)','Gap Units','Contact Action','Remarks'],
+    rows:(data,o)=>{
+      const dm={};
+      data.forEach(r=>{if(!dm[r.distributor])dm[r.distributor]={dist:r.distributor,team:r.team,p:0,i:0,due:0};dm[r.distributor].p+=tgt(r);dm[r.distributor].i+=r.invoice;dm[r.distributor].due+=dv(r);});
+      return Object.values(dm).sort((a,b)=>b.due-a.due).map((d,i)=>{
+        const p=d.p>0?(d.i/d.p)*100:null;
+        const pri=p===null?'N/A':p<settings.tO?'HIGH':p<settings.tG?'MEDIUM':'LOW';
+        return[pri, d.dist, d.team,
+          o.pct?fP(p):'—', o.value?'PKR '+fmt(d.due):'—', o.units?fmt(d.p-d.i):'—',
+          p<settings.tO?'Call + Visit':'Send Reminder',
+          p<settings.tO?'Immediate follow-up needed':p<settings.tG?'Schedule meeting':'On track — monitor'];
+      });
+    }
+  },
+  'full-database':{
+    title:'Full Database Export',
+    cols:['Product','Team','Distributor','Price (PKR)','Monthly Avg','60D Target','Closing Stock','Invoiced','Remaining','Due Value (PKR)','Rep %','Slow Moving'],
+    rows:(data,o)=>data.map(r=>[
+      r.product,r.team,r.distributor,
+      o.value?'PKR '+fmt(r.price):'—',
+      o.units?fmt(r.monthly):'—', o.units?fmt(tgt(r)):'—',
+      o.units?fmt(r.closingStock):'—', o.units?fmt(r.invoice):'—',
+      o.units?fmt(rem(r)):'—', o.value?'PKR '+fmt(dv(r)):'—',
+      o.pct?fP(rPct(r)):'—', isSlw(r)?'YES':'NO'
+    ])
+  }
+};
+
+function genReport(type, format){
+  const def=REPORT_DEFS[type];
+  if(!def){showN('Unknown report type',true);return;}
+  const data=fDB();
+  const opts=rptOpts();
+  const rows=def.rows(data,opts);
+  const hdr=rptHdr();
+  const st=document.getElementById('rpt-status');
+
+  if(!rows.length){
+    if(st)st.innerHTML='<div class="msg error">❌ No data for current filter selection.</div>';
+    return;
+  }
+  if(st)st.innerHTML='<div class="msg info">⏳ Generating '+def.title+'…</div>';
+
+  try{
+    if(format==='pdf') genPDF(def, rows, hdr, opts);
+    else genXLSX(def, rows, hdr);
+    if(st)st.innerHTML='<div class="msg success">✓ '+def.title+' downloaded successfully!</div>';
+    showN('✓ Report downloaded');
+  }catch(e){
+    console.error(e);
+    if(st)st.innerHTML='<div class="msg error">❌ Error generating report: '+e.message+'</div>';
+    showN('Report error',true);
+  }
+}
+
+function genPDF(def, rows, hdr, opts){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const W=doc.internal.pageSize.getWidth();
+  const accentR=0,accentG=180,accentB=230;
+
+  // Header band
+  doc.setFillColor(7,12,20);
+  doc.rect(0,0,W,22,'F');
+  doc.setTextColor(0,212,255);
+  doc.setFontSize(13);doc.setFont('helvetica','bold');
+  doc.text(hdr.co,14,9);
+  doc.setFontSize(8);doc.setFont('helvetica','normal');
+  doc.setTextColor(138,173,204);
+  doc.text(hdr.sub,14,14.5);
+  doc.setTextColor(200,220,240);
+  doc.text(hdr.date,W-14,9,{align:'right'});
+  doc.text('Filters: '+hdr.filters,W-14,14.5,{align:'right'});
+
+  // Title bar
+  doc.setFillColor(15,28,46);
+  doc.rect(0,22,W,10,'F');
+  doc.setTextColor(0,212,255);
+  doc.setFontSize(10);doc.setFont('helvetica','bold');
+  doc.text(def.title,14,28.5);
+  doc.setTextColor(138,173,204);
+  doc.setFontSize(7);doc.setFont('helvetica','normal');
+  doc.text(`${rows.length} records`,W-14,28.5,{align:'right'});
+
+  // Summary row
+  let data=fDB(),tp=0,ti=0,td=0;
+  data.forEach(r=>{tp+=tgt(r);ti+=r.invoice;td+=dv(r);});
+  const pct=tp>0?(ti/tp)*100:0;
+  doc.setFillColor(17,29,46);
+  doc.rect(0,32,W,10,'F');
+  doc.setFontSize(7);doc.setTextColor(0,229,160);doc.setFont('helvetica','bold');
+  const sumParts=[
+    opts.units?`Planned: ${fmt(tp)} Units`:'',
+    opts.units?`Invoiced: ${fmt(ti)} Units`:'',
+    opts.pct?`Achievement: ${fP(pct)}`:'',
+    opts.value?`Due: PKR ${fmt(td)}`:'',
+  ].filter(Boolean).join('   |   ');
+  doc.text(sumParts,14,38);
+
+  // Table
+  const colStyles={};
+  def.cols.forEach((_,i)=>{colStyles[i]={cellWidth:'auto'};});
+  doc.autoTable({
+    startY:44,
+    head:[def.cols],
+    body:rows,
+    theme:'grid',
+    headStyles:{fillColor:[15,28,46],textColor:[0,212,255],fontSize:7,fontStyle:'bold',halign:'center'},
+    bodyStyles:{fillColor:[11,21,32],textColor:[200,220,240],fontSize:6.5,lineColor:[30,48,80],lineWidth:0.2},
+    alternateRowStyles:{fillColor:[13,25,40]},
+    columnStyles:colStyles,
+    margin:{top:44,left:10,right:10},
+    didDrawCell:(data)=>{
+      if(data.section==='body'){
+        const v=String(data.cell.raw);
+        if(v==='CRITICAL'||v==='HIGH'||v==='URGENT FOLLOW-UP REQUIRED'){doc.setTextColor(255,71,87);}
+        else if(v==='MEDIUM'||v==='WARNING'||v==='LOW'){doc.setTextColor(255,149,0);}
+        else if(v==='On Track'||v==='ADEQUATE'||v==='NO'){doc.setTextColor(0,229,160);}
+        else{doc.setTextColor(200,220,240);}
+      }
+    }
+  });
+
+  // Footer
+  const pg=doc.internal.getNumberOfPages();
+  for(let i=1;i<=pg;i++){
+    doc.setPage(i);
+    doc.setFillColor(7,12,20);
+    doc.rect(0,doc.internal.pageSize.getHeight()-8,W,8,'F');
+    doc.setFontSize(6);doc.setTextColor(74,112,144);doc.setFont('helvetica','normal');
+    doc.text('Shaigan Pharma — Confidential | Page '+i+' of '+pg,W/2,doc.internal.pageSize.getHeight()-2.5,{align:'center'});
+  }
+  doc.save(`Shaigan_${def.title.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function genXLSX(def, rows, hdr){
+  const wb=XLSX.utils.book_new();
+  const wsData=[];
+  // Title rows
+  wsData.push([hdr.co+' — '+hdr.sub]);
+  wsData.push([def.title]);
+  wsData.push(['Date: '+hdr.date+'   Filters: '+hdr.filters]);
+  wsData.push([]);
+  // Summary
+  const d=fDB();let tp=0,ti=0,td=0;
+  d.forEach(r=>{tp+=tgt(r);ti+=r.invoice;td+=dv(r);});
+  wsData.push(['Summary:','Planned: '+fmt(tp)+' Units','Invoiced: '+fmt(ti)+' Units','Achievement: '+fP(tp>0?(ti/tp)*100:0),'Total Due: PKR '+fmt(td)]);
+  wsData.push([]);
+  wsData.push(def.cols);
+  rows.forEach(r=>wsData.push(r));
+
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  // Column widths
+  const maxW=def.cols.map((c,ci)=>Math.max(c.length, ...rows.map(r=>String(r[ci]||'').length)));
+  ws['!cols']=maxW.map(w=>({wch:Math.min(w+2,35)}));
+  // Merge title
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:def.cols.length-1}},{s:{r:1,c:0},e:{r:1,c:def.cols.length-1}},{s:{r:2,c:0},e:{r:2,c:def.cols.length-1}}];
+
+  XLSX.utils.book_append_sheet(wb,ws,def.title.slice(0,31));
+  // Summary sheet
+  const sumRows=[
+    ['Shaigan Pharma — Report Summary'],[''],
+    ['Generated:',new Date().toLocaleString()],
+    ['Report:',def.title],
+    ['Filters:',hdr.filters],
+    ['Total Records:',rows.length],[''],
+    ['KPI Summary'],
+    ['Planned Units',fmt(tp)],
+    ['Invoiced Units',fmt(ti)],
+    ['Achievement %',fP(tp>0?(ti/tp)*100:0)],
+    ['Total Due PKR','PKR '+fmt(td)],
+    ['Slow SKUs',fDB().filter(isSlw).length],
+  ];
+  const ws2=XLSX.utils.aoa_to_sheet(sumRows);
+  ws2['!cols']=[{wch:22},{wch:28}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Summary');
+  XLSX.writeFile(wb,`Shaigan_${def.title.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
 
 init();
 </script>
