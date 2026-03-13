@@ -19,6 +19,32 @@
   --shadow:0 8px 32px rgba(0,0,0,0.6);
   --accent:#00d4ff; --accent2:#0099cc;
   --green:#00e5a0; --orange:#ff9500; --red:#ff4757; --purple:#a855f7; --yellow:#ffd43b;
+  --glass-bg:rgba(15,28,46,0.72); --glass-border:rgba(0,212,255,0.18);
+  --glass-blur:blur(14px);
+}
+/* ── TEAL-GOLD (image-inspired: deep teal + gold + neon green) ── */
+body.theme-teal-gold {
+  --bg:#011414; --bg2:#021c1c; --bg3:#032a2a;
+  --card:#042222; --card2:#053030;
+  --border:#0a4040; --border2:#0f6060;
+  --text:#e0fff8; --text2:#7addd0; --text3:#3a8a80;
+  --shadow:0 8px 32px rgba(0,0,0,0.75);
+  --accent:#d4a830; --accent2:#b88a20;
+  --green:#00ff88; --orange:#ff9500; --red:#ff4757; --purple:#a855f7; --yellow:#f0c040;
+  --glass-bg:rgba(4,34,34,0.72); --glass-border:rgba(212,168,48,0.25);
+  --glass-blur:blur(14px);
+}
+/* ── CYBER TEAL (electric teal + neon accents, glassmorphic) ── */
+body.theme-cyber {
+  --bg:#020d12; --bg2:#041520; --bg3:#061e2a;
+  --card:#071e2a; --card2:#092535;
+  --border:#0e3d50; --border2:#1a6070;
+  --text:#d8f8ff; --text2:#6acce0; --text3:#2a7a90;
+  --shadow:0 8px 32px rgba(0,0,0,0.8);
+  --accent:#00d4c8; --accent2:#009e9a;
+  --green:#39ff80; --orange:#ffaa00; --red:#ff3366; --purple:#cc44ff; --yellow:#ffee44;
+  --glass-bg:rgba(7,30,42,0.70); --glass-border:rgba(0,212,200,0.20);
+  --glass-blur:blur(16px);
 }
 body.theme-medium {
   --bg:#eef2f7; --bg2:#e2e8f2; --bg3:#d5dde9;
@@ -42,6 +68,15 @@ body.theme-light {
 body{background:var(--bg);color:var(--text);font-family:var(--font-body,Calibri,'Outfit',sans-serif);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
 body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 10%,rgba(0,100,200,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,180,255,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
 body.theme-light::before,body.theme-medium::before{background:none;}
+body.theme-teal-gold::before{background:radial-gradient(ellipse at 15% 15%,rgba(212,168,48,0.08) 0%,transparent 50%),radial-gradient(ellipse at 85% 85%,rgba(0,255,136,0.05) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(0,100,90,0.06) 0%,transparent 70%);}
+body.theme-cyber::before{background:radial-gradient(ellipse at 20% 20%,rgba(0,212,200,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(57,255,128,0.04) 0%,transparent 50%);}
+/* Theme switcher bar */
+.theme-bar{display:flex;align-items:center;gap:8px;padding:0 24px;background:var(--bg3);border-bottom:1px solid var(--border);height:38px;overflow-x:auto;}
+.theme-bar-label{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;flex-shrink:0;}
+.th-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.th-btn:hover{border-color:var(--accent);color:var(--accent);}
+.th-btn.active{border-color:var(--accent);background:rgba(0,212,255,0.1);color:var(--accent);font-weight:700;}
+.th-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 
 /* HEADER */
 header{background:linear-gradient(90deg,var(--bg) 0%,var(--card) 40%,var(--card) 100%);border-bottom:2px solid var(--accent);padding:0 24px;position:sticky;top:0;z-index:200;box-shadow:0 4px 24px rgba(0,0,0,0.7),0 0 40px rgba(0,212,255,0.06);}
@@ -67,8 +102,8 @@ header{background:linear-gradient(90deg,var(--bg) 0%,var(--card) 40%,var(--card)
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
 
 /* GLOBAL FILTER BAR */
-.gfbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:66px;z-index:190;}
-.gfbar-inner{display:flex;align-items:center;gap:9px;max-width:1700px;margin:0 auto;height:48px;overflow-x:auto;}
+.gfbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:66px;z-index:600;overflow:visible;}
+.gfbar-inner{display:flex;align-items:center;gap:9px;max-width:1700px;margin:0 auto;height:48px;overflow:visible;}
 .gf-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;flex-shrink:0;}
 .gf-sel{background:var(--card);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;padding:6px 10px;outline:none;cursor:pointer;transition:border-color 0.2s;}
 .gf-sel:hover,.gf-sel:focus{border-color:var(--accent);}
@@ -84,18 +119,18 @@ header{background:linear-gradient(90deg,var(--bg) 0%,var(--card) 40%,var(--card)
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
 
 /* MAIN */
-.main{max-width:1700px;margin:0 auto;padding:18px 24px;position:relative;z-index:1;}
+.main{max-width:1700px;margin:0 auto;padding:18px 24px;position:relative;z-index:1;overflow:visible;}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px;}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;position:relative;overflow:hidden;transition:all 0.2s;}
+.kpi-card{background:var(--glass-bg,var(--card));border:1px solid var(--glass-border,var(--border));border-radius:14px;padding:16px;position:relative;overflow:hidden;transition:all 0.2s;backdrop-filter:var(--glass-blur,none);-webkit-backdrop-filter:var(--glass-blur,none);box-shadow:0 4px 24px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.06);}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .kpi-card.blue::before{background:linear-gradient(90deg,var(--accent),transparent);}
 .kpi-card.green::before{background:linear-gradient(90deg,var(--green),transparent);}
 .kpi-card.orange::before{background:linear-gradient(90deg,var(--orange),transparent);}
 .kpi-card.red::before{background:linear-gradient(90deg,var(--red),transparent);}
 .kpi-card.purple::before{background:linear-gradient(90deg,var(--purple),transparent);}
-.kpi-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.kpi-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 20px color-mix(in srgb,var(--accent) 20%,transparent),inset 0 1px 0 rgba(255,255,255,0.1);}
 .kpi-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;font-family:'DM Mono',monospace;margin-bottom:7px;font-weight:600;}
 .kpi-val{font-size:24px;font-weight:700;font-family:var(--font-display,'Syne',sans-serif);line-height:1.1;}
 .kpi-val.blue{color:var(--accent);}.kpi-val.green{color:var(--green);}.kpi-val.orange{color:var(--orange);}.kpi-val.red{color:var(--red);}.kpi-val.purple{color:var(--purple);}
@@ -118,7 +153,7 @@ header{background:linear-gradient(90deg,var(--bg) 0%,var(--card) 40%,var(--card)
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px;}
 @media(max-width:1100px){.g2,.g3{grid-template-columns:1fr;}}
-.panel{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;}
+.panel{background:var(--glass-bg,var(--card));border:1px solid var(--glass-border,var(--border));border-radius:14px;padding:16px;backdrop-filter:var(--glass-blur,none);-webkit-backdrop-filter:var(--glass-blur,none);box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.04);}
 .chart-wrap{position:relative;height:240px;}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .sec-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px;}
@@ -160,7 +195,7 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 
 /* DIST CARDS */
 .dcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
-.dcard{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px;transition:all 0.22s;cursor:pointer;overflow:hidden;}
+.dcard{background:var(--glass-bg,var(--card));border:1px solid var(--glass-border,var(--border));border-radius:14px;padding:16px;transition:all 0.22s;cursor:pointer;overflow:hidden;backdrop-filter:var(--glass-blur,none);-webkit-backdrop-filter:var(--glass-blur,none);box-shadow:0 2px 16px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.04);}
 .dcard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow);}
 .dcard.sel{border-color:var(--accent);background:rgba(0,212,255,0.03);}
 .dcard-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
@@ -280,6 +315,24 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 .col-rm{cursor:pointer;color:var(--red);font-size:14px;opacity:0.7;padding:0 3px;}.col-rm:hover{opacity:1;}
 
 ::-webkit-scrollbar{width:5px;height:5px;}
+/* Searchable dropdown */
+.srch-dd{position:relative;display:inline-block;user-select:none;overflow:visible;}
+.srch-dd.wide{min-width:200px;}
+.srch-dd-btn{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px;color:var(--text2);min-width:120px;transition:border-color .2s;}
+.srch-dd.wide .srch-dd-btn{min-width:190px;}
+.srch-dd-btn:hover,.srch-dd.open .srch-dd-btn{border-color:var(--accent);color:var(--text);}
+.srch-dd-arr{font-size:9px;opacity:0.6;transition:transform .2s;}
+.srch-dd.open .srch-dd-arr{transform:rotate(180deg);}
+.srch-dd-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:200px;max-width:320px;background:var(--card);border:1px solid var(--border2);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:2000;overflow:hidden;}
+.srch-dd.wide .srch-dd-panel{min-width:260px;}
+.srch-dd.open .srch-dd-panel{display:block;}
+.srch-dd-inp{width:100%;padding:8px 10px;border:none;border-bottom:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:11px;outline:none;box-sizing:border-box;}
+.srch-dd-inp::placeholder{color:var(--text3);}
+.srch-dd-list{max-height:220px;overflow-y:auto;}
+.srch-dd-item{padding:7px 12px;font-size:11px;cursor:pointer;color:var(--text2);transition:background .15s;}
+.srch-dd-item:hover{background:var(--bg2);color:var(--text);}
+.srch-dd-item.active{background:rgba(0,212,255,0.12);color:var(--accent);}
+.srch-dd-item.all-item{color:var(--text3);font-style:italic;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 .wm{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;padding:9px 0;text-align:center;border-top:1px solid var(--border);margin-top:22px;}
@@ -313,15 +366,42 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 <div class="gfbar">
 <div class="gfbar-inner">
   <span class="gf-label">🔍 Filter:</span>
-  <select class="gf-sel" id="gf-team" onchange="applyGF()"><option value="">All Teams</option></select>
-  <select class="gf-sel" id="gf-dist" onchange="applyGF()"><option value="">All Distributors</option></select>
-  <select class="gf-sel" id="gf-prod" onchange="applyGF()" style="min-width:200px;max-width:260px;"><option value="">All Products</option></select>
+  <div class="srch-dd" id="sdd-team">
+    <div class="srch-dd-btn" onclick="toggleSDD('sdd-team')"><span id="sdd-team-lbl">All Teams</span><span class="srch-dd-arr">▾</span></div>
+    <div class="srch-dd-panel">
+      <input class="srch-dd-inp" placeholder="Search teams…" oninput="filterSDD('sdd-team',this.value)">
+      <div class="srch-dd-list" id="sdd-team-list"></div>
+    </div>
+  </div>
+  <div class="srch-dd" id="sdd-dist">
+    <div class="srch-dd-btn" onclick="toggleSDD('sdd-dist')"><span id="sdd-dist-lbl">All Distributors</span><span class="srch-dd-arr">▾</span></div>
+    <div class="srch-dd-panel">
+      <input class="srch-dd-inp" placeholder="Search distributors…" oninput="filterSDD('sdd-dist',this.value)">
+      <div class="srch-dd-list" id="sdd-dist-list"></div>
+    </div>
+  </div>
+  <div class="srch-dd wide" id="sdd-prod">
+    <div class="srch-dd-btn" onclick="toggleSDD('sdd-prod')"><span id="sdd-prod-lbl">All Products</span><span class="srch-dd-arr">▾</span></div>
+    <div class="srch-dd-panel">
+      <input class="srch-dd-inp" placeholder="Search products…" oninput="filterSDD('sdd-prod',this.value)">
+      <div class="srch-dd-list" id="sdd-prod-list"></div>
+    </div>
+  </div>
   <div class="gf-div"></div>
   <div id="af-tags" style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap;"></div>
   <button class="btn btn-ghost" id="clear-gf" onclick="clearGF()" style="font-size:10px;padding:3px 9px;display:none;">✕ Clear All</button>
 </div>
 </div>
 
+<!-- THEME SWITCHER BAR -->
+<div class="theme-bar" id="theme-bar">
+  <span class="theme-bar-label">🎨 Theme:</span>
+  <button class="th-btn active" id="thb-dark" onclick="setTheme('dark')"><span class="th-swatch" style="background:linear-gradient(135deg,#070c14,#0f1c2e)"></span>Deep Space</button>
+  <button class="th-btn" id="thb-teal-gold" onclick="setTheme('teal-gold')"><span class="th-swatch" style="background:linear-gradient(135deg,#041a1a,#d4a830)"></span>Teal Gold</button>
+  <button class="th-btn" id="thb-cyber" onclick="setTheme('cyber')"><span class="th-swatch" style="background:linear-gradient(135deg,#020d12,#00d4c8)"></span>Cyber Teal</button>
+  <button class="th-btn" id="thb-medium" onclick="setTheme('medium')"><span class="th-swatch" style="background:linear-gradient(135deg,#eef2f7,#0070cc)"></span>Executive</button>
+  <button class="th-btn" id="thb-light" onclick="setTheme('light')"><span class="th-swatch" style="background:linear-gradient(135deg,#f8fafc,#0060bb)"></span>Clean Light</button>
+</div>
 <!-- TABS -->
 <div class="tabsbar">
 <div class="tabsbar-inner">
@@ -340,38 +420,52 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
   <div class="kpi-grid">
     <div class="kpi-card blue">
       <div class="kpi-ico">📦</div>
-      <div class="kpi-lbl">Planned (60-Day Target)</div>
+      <div class="kpi-lbl">Total Orders Placed</div>
       <div class="kpi-val blue" id="kpi-p">—<span class="kpi-unit" id="kpi-p-unit"> Units</span></div>
       <div class="kpi-val2 blue" id="kpi-p-val">—</div>
-      <div class="kpi-sub" id="kpi-p-sub">60-day replenishment target</div>
+      <div class="kpi-sub" id="kpi-p-sub">Orders raised (Closing &lt; AVG×2.1)</div>
     </div>
     <div class="kpi-card green">
       <div class="kpi-ico">✅</div>
-      <div class="kpi-lbl">Actual Invoiced</div>
+      <div class="kpi-lbl">Total Invoiced</div>
       <div class="kpi-val green" id="kpi-i">—<span class="kpi-unit" id="kpi-i-unit"> Units</span></div>
       <div class="kpi-val2 green" id="kpi-i-val">—</div>
-      <div class="kpi-sub" id="kpi-i-sub">Units dispatched to distributor</div>
+      <div class="kpi-sub" id="kpi-i-sub">Units dispatched against orders</div>
     </div>
     <div class="kpi-card orange">
       <div class="kpi-ico">⚡</div>
       <div class="kpi-lbl">Replenishment %</div>
       <div class="kpi-val orange" id="kpi-r">—</div>
       <div class="kpi-val2 orange" id="kpi-r-val">—</div>
-      <div class="kpi-sub" id="kpi-r-sub">Planned vs Actual achievement</div>
+      <div class="kpi-sub" id="kpi-r-sub">Invoice ÷ Order × 100</div>
     </div>
     <div class="kpi-card red">
       <div class="kpi-ico">💰</div>
       <div class="kpi-lbl">Total Due Amount</div>
       <div class="kpi-val red" id="kpi-d">—</div>
       <div class="kpi-val2 red" id="kpi-d-val">—</div>
-      <div class="kpi-sub" id="kpi-d-sub">Pending replenishment value</div>
+      <div class="kpi-sub" id="kpi-d-sub">Value of un-invoiced ordered stock</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-ico">🐌</div>
       <div class="kpi-lbl">Slow-Moving SKUs</div>
       <div class="kpi-val purple" id="kpi-s">—<span class="kpi-unit" id="kpi-s-unit"> SKUs</span></div>
       <div class="kpi-val2 purple" id="kpi-s-val">—</div>
-      <div class="kpi-sub" id="kpi-s-sub">Stock &gt; 2× monthly average</div>
+      <div class="kpi-sub" id="kpi-s-sub">Closing &gt; 2× Avg Sales</div>
+    </div>
+    <div class="kpi-card" style="--card:rgba(20,40,15,0.8);border-color:rgba(0,255,136,0.25);">
+      <div class="kpi-ico">📅</div>
+      <div class="kpi-lbl" style="color:#7addb0;">Stock Days (Closing)</div>
+      <div class="kpi-val" style="color:#00ff88;" id="kpi-days">—<span class="kpi-unit"> Days</span></div>
+      <div class="kpi-val2" style="color:#00ff88;background:rgba(0,255,136,0.1);" id="kpi-days-sub">—</div>
+      <div class="kpi-sub">Closing Stock ÷ Daily Avg Sales</div>
+    </div>
+    <div class="kpi-card" style="--card:rgba(20,30,50,0.8);border-color:rgba(212,168,48,0.3);">
+      <div class="kpi-ico">🏭</div>
+      <div class="kpi-lbl" style="color:#c8b070;">Projected Closing Stock</div>
+      <div class="kpi-val" style="color:#d4a830;" id="kpi-proj">—<span class="kpi-unit"> Units</span></div>
+      <div class="kpi-val2" style="color:#d4a830;background:rgba(212,168,48,0.1);" id="kpi-proj-days">—</div>
+      <div class="kpi-sub">Closing + Invoice − MTD Sales</div>
     </div>
   </div>
   <div class="g2">
@@ -419,7 +513,7 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
   </div>
   <div class="twrap">
     <table>
-      <thead><tr><th onclick="srt('slow',0)">Product ↕</th><th onclick="srt('slow',1)">Distributor ↕</th><th onclick="srt('slow',2)">Team ↕</th><th onclick="srt('slow',3)">Closing Stock ↕</th><th onclick="srt('slow',4)">Monthly Avg ↕</th><th onclick="srt('slow',5)">60-Day Need ↕</th><th onclick="srt('slow',6)">Excess Stock ↕</th><th onclick="srt('slow',7)">Excess Value ↕</th><th>Category</th></tr></thead>
+      <thead><tr><th onclick="srt('slow',0)">Product ↕</th><th onclick="srt('slow',1)">Distributor ↕</th><th onclick="srt('slow',2)">Team ↕</th><th onclick="srt('slow',3)">Closing Stock ↕</th><th onclick="srt('slow',4)">Monthly Avg ↕</th><th onclick="srt('slow',5)">Stock Days ↕</th><th onclick="srt('slow',6)">Proj. Closing ↕</th><th onclick="srt('slow',7)">Excess Stock ↕</th><th onclick="srt('slow',8)">Excess Value ↕</th><th>Category</th></tr></thead>
       <tbody id="slow-body"></tbody>
     </table>
     <div class="pgn" id="slow-pgn"></div>
@@ -430,7 +524,7 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 <div id="tab-replenishment" class="tab-page">
   <div class="twrap">
     <table>
-      <thead><tr><th onclick="srt('rep',0)">Product ↕</th><th onclick="srt('rep',1)">Distributor ↕</th><th onclick="srt('rep',2)">Team ↕</th><th onclick="srt('rep',3)">Price ↕</th><th onclick="srt('rep',4)">60D Target ↕</th><th onclick="srt('rep',5)">Invoiced ↕</th><th onclick="srt('rep',6)">Remaining ↕</th><th onclick="srt('rep',7)">Due Value ↕</th><th onclick="srt('rep',8)">Rep % ↕</th><th>Priority</th></tr></thead>
+      <thead><tr><th onclick="srt('rep',0)">Product ↕</th><th onclick="srt('rep',1)">Distributor ↕</th><th onclick="srt('rep',2)">Team ↕</th><th onclick="srt('rep',3)">Price ↕</th><th onclick="srt('rep',4)">Ordered ↕</th><th onclick="srt('rep',5)">Invoiced ↕</th><th onclick="srt('rep',6)">Remaining ↕</th><th onclick="srt('rep',7)">Stock Days ↕</th><th onclick="srt('rep',8)">Proj. Closing ↕</th><th onclick="srt('rep',9)">Due Value ↕</th><th onclick="srt('rep',10)">Rep % ↕</th><th>Priority</th></tr></thead>
       <tbody id="rep-body"></tbody>
     </table>
     <div class="pgn" id="rep-pgn"></div>
@@ -738,7 +832,7 @@ let DB=[], GF={team:'',dist:'',prod:''}, settings={tG:80,tO:60,sm:2,td:60,accent
 let charts={}, sortS={}, spg=1, rpg=1, PG=20;
 let pendingFiles=[];
 
-const SEED=`PRODUCTS,Ex-Fac. Price,Team Name,Distributor Name,Jan-26,JAN AS AVERAGE,AVG x 2.1,Closing Stock,TOTAL ORDER,6-Feb,12-Feb,Invoice,60 Day inventory
+const SEED=`PRODUCTS,Ex-Fac. Price,Team Name,Distributor Name,Jan-26,JAN AS AVERAGE,AVG x 2.1,Closing Stock,TOTAL ORDER,6-Feb,12-Feb,Invoice,60 Day inventory,MTD Sales
 Famot 20,225.86,MEDIX,HABIB ENTERPRISES,39,39,82,23,59,35,23,27,0
 Famot 40,220.45,MEDIX,HABIB ENTERPRISES,64,64,134,18,116,70,46,84,20
 Famot 40 INJ,154.70,MEDIX,HABIB ENTERPRISES,54,54,113,166,0,0,0,0,0
@@ -787,6 +881,8 @@ function init(){
   document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});
   document.getElementById('wm-date').textContent=new Date().toLocaleDateString();
   if(settings.theme)setTheme(settings.theme,true);
+  // Sync theme bar buttons on load
+  ['dark','teal-gold','cyber','medium','light'].forEach(t=>{const el=document.getElementById('thb-'+t);if(el)el.classList.toggle('active',t===(settings.theme||'dark'));});
   if(settings.logoSrc){const img=document.getElementById('logo-img');if(img){img.src=settings.logoSrc;img.style.display='block';}}
   if(settings.accent)document.documentElement.style.setProperty('--accent',settings.accent);
   initFonts();
@@ -797,10 +893,20 @@ function parseCSV(txt){return Papa.parse(txt,{header:true,skipEmptyLines:true}).
 function parseR(r){
   const c=v=>{if(v===undefined||v===null||v==='')return 0;return parseFloat(String(v).replace(/,/g,''))||0;};
   const p=r['PRODUCTS']||r['Product'];if(!p||!String(p).trim())return null;
-  return{product:String(p).trim(),price:c(r['Ex-Fac. Price']||r['Price']),team:String(r['Team Name']||r['Team']||'').trim(),
-    distributor:String(r['Distributor Name']||r['Distributor']||'').trim(),
-    monthly:c(r['JAN AS AVERAGE']||r['Monthly Avg']),avg21:c(r['AVG x 2.1']),
-    closingStock:c(r['Closing Stock']),invoice:c(r['Invoice']||r['Invoiced']),inventory60:c(r['60 Day inventory'])};
+  // Support both old headers (Team Name, JAN AS AVERAGE) and new headers (Team, Average sales, Last month sales)
+  const team=String(r['Team']||r['Team Name']||'').trim();
+  const dist=String(r['Distributor Name']||r['Distributor']||'').trim();
+  const monthly=c(r['Average sales']||r['JAN AS AVERAGE']||r['Monthly Avg']);
+  const lastMonthSales=c(r['Last month sales']||r['Jan-26']||0);
+  const avg21=c(r['AVG x 2.1']);
+  const closing=c(r['Closing Stock']);
+  const totalOrder=c(r['TOTAL ORDER']||0);
+  const invoice=c(r['Invoice']||r['Invoiced']||0);
+  const inventory60=c(r['60 Day inventory']||0);
+  const mtdSales=c(r['MTD Sales']||r['MTD']||r['Month To Date Sales']||0);
+  return{product:String(p).trim(),price:c(r['Ex-Fac. Price']||r['Price']),
+    team,distributor:dist,monthly,lastMonthSales,avg21,
+    closingStock:closing,totalOrder,invoice,inventory60,mtdSales};
 }
 function svDB(){localStorage.setItem('sp_db',JSON.stringify(DB));}
 function svSet(){localStorage.setItem('sp_set',JSON.stringify(settings));}
@@ -809,12 +915,27 @@ function svSet(){localStorage.setItem('sp_set',JSON.stringify(settings));}
 function fDB(){return DB.filter(r=>{if(GF.team&&r.team!==GF.team)return false;if(GF.dist&&r.distributor!==GF.dist)return false;if(GF.prod&&r.product!==GF.prod)return false;return true;});}
 
 // CALCS
-function tgt(r){return r.avg21||(r.monthly*2);}
+// planned = TOTAL ORDER column (order raised when closing < avg21)
+function tgt(r){return r.totalOrder||0;}
+// gap still to be invoiced from ordered qty
 function rem(r){return Math.max(0,tgt(r)-r.invoice);}
+// % of ordered qty that has been invoiced
 function rPct(r){const t=tgt(r);if(!t)return null;return Math.min(100,(r.invoice/t)*100);}
+// due value = remaining * price
 function dv(r){return rem(r)*r.price;}
+// slow-moving: closing stock > 2× monthly average sales
 function isSlw(r){if(!r.monthly)return false;return r.closingStock>r.monthly*settings.sm;}
+// needs order: closing stock < avg21 (but no order raised yet)
+function needsOrder(r){return r.avg21>0&&r.closingStock<r.avg21&&r.totalOrder===0;}
 function exS(r){return Math.max(0,r.closingStock-(r.monthly*2));}
+// daily average sales = monthly avg / 30
+function dailyAvg(r){return r.monthly>0?r.monthly/30:0;}
+// stock days = closing stock / daily avg sales  (how many days current closing stock will last)
+function stockDays(r){const d=dailyAvg(r);return d>0?Math.round(r.closingStock/d):null;}
+// projected closing = closing stock + invoice - MTD sales
+function projClosing(r){return Math.max(0,r.closingStock+r.invoice-(r.mtdSales||0));}
+// projected closing days = projClosing / daily avg
+function projClosingDays(r){const d=dailyAvg(r);return d>0?Math.round(projClosing(r)/d):null;}
 function fmt(n){return Math.round(n).toLocaleString('en-PK');}
 function fP(n){return n!==null?n.toFixed(1)+'%':'—';}
 function pbC(p){return p>=settings.tG?'high':p>=settings.tO?'mid':'low';}
@@ -827,40 +948,128 @@ function dSumm(data){
 
 // GLOBAL FILTER
 function popGF(){
-  const teams=[...new Set(DB.map(r=>r.team))].sort();
-  const dists=[...new Set(DB.map(r=>r.distributor))].sort();
-  const prods=[...new Set(DB.map(r=>r.product))].sort();
-  const gt=document.getElementById('gf-team'),gd=document.getElementById('gf-dist'),gp=document.getElementById('gf-prod');
-  gt.innerHTML='<option value="">All Teams</option>'+teams.map(t=>`<option value="${t}">${t}</option>`).join('');
-  gd.innerHTML='<option value="">All Distributors</option>'+dists.map(d=>`<option value="${d}">${d}</option>`).join('');
-  gp.innerHTML='<option value="">All Products</option>'+prods.map(p=>`<option value="${p}">${p}</option>`).join('');
-  gt.value=GF.team; gd.value=GF.dist; gp.value=GF.prod;
+  const teams=[...new Set(DB.map(r=>r.team))].filter(Boolean).sort();
+  const dists=[...new Set(DB.map(r=>r.distributor))].filter(Boolean).sort();
+  const prods=[...new Set(DB.map(r=>r.product))].filter(Boolean).sort();
+  // Build searchable dropdown lists
+  buildSDD('sdd-team',teams,'team','All Teams');
+  buildSDD('sdd-dist',dists,'dist','All Distributors');
+  buildSDD('sdd-prod',prods,'prod','All Products');
 }
-function applyGF(){GF.team=document.getElementById('gf-team').value;GF.dist=document.getElementById('gf-dist').value;GF.prod=document.getElementById('gf-prod').value;updBadges();renderAll();}
-function setTeam(t){GF.team=GF.team===t?'':t;document.getElementById('gf-team').value=GF.team;updBadges();renderAll();showN(GF.team?`🔍 Team: ${GF.team}`:'Filter cleared');}
-function setDist(d){GF.dist=GF.dist===d?'':d;document.getElementById('gf-dist').value=GF.dist;updBadges();renderAll();showN(GF.dist?`🔍 Dist: ${GF.dist}`:'Filter cleared');}
-function setProd(p){GF.prod=GF.prod===p?'':p;document.getElementById('gf-prod').value=GF.prod;updBadges();renderAll();showN(GF.prod?`🔍 Product: ${GF.prod}`:'Filter cleared');}
-function clearGF(){GF={team:'',dist:'',prod:''};document.getElementById('gf-team').value='';document.getElementById('gf-dist').value='';document.getElementById('gf-prod').value='';updBadges();renderAll();showN('All filters cleared');}
-function updBadges(){
-  let h='';
-  if(GF.team)h+=`<div class="af-badge" onclick="setTeam('${esc(GF.team)}')">Team: ${GF.team} <span>✕</span></div>`;
-  if(GF.dist)h+=`<div class="af-badge" onclick="setDist('${esc(GF.dist)}')">Dist: ${GF.dist} <span>✕</span></div>`;
-  if(GF.prod)h+=`<div class="af-badge" onclick="setProd('${esc(GF.prod)}')">Product: ${GF.prod.length>20?GF.prod.slice(0,20)+'…':GF.prod} <span>✕</span></div>`;
-  document.getElementById('af-tags').innerHTML=h;
-  document.getElementById('clear-gf').style.display=(GF.team||GF.dist||GF.prod)?'block':'none';
+// ══════ Searchable dropdown helpers ══════
+const SDD_STATE={team:'',dist:'',prod:''};
+function buildSDD(id,items,key,placeholder){
+  const list=document.getElementById(id+'-list');
+  if(!list)return;
+  SDD_STATE[key]=GF[key]||'';
+  renderSDDList(id,items,key,placeholder);
 }
+function renderSDDList(id,items,key,placeholder,filter){
+  const list=document.getElementById(id+'-list');
+  const lbl=document.getElementById(id+'-lbl');
+  if(!list)return;
+  const fi=filter?filter.toLowerCase():'';
+  const filtered=fi?items.filter(i=>i.toLowerCase().includes(fi)):items;
+  // Use data-val attribute + event delegation to avoid inline onclick escaping issues
+  let html=`<div class="srch-dd-item all-item${SDD_STATE[key]===''?' active':''}" data-sdd-id="${id}" data-sdd-key="${key}" data-sdd-ph="${placeholder}" data-sdd-val="">${placeholder}</div>`;
+  html+=filtered.map(i=>{
+    const safe=i.replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const active=SDD_STATE[key]===i?' active':'';
+    return`<div class="srch-dd-item${active}" data-sdd-id="${id}" data-sdd-key="${key}" data-sdd-ph="${placeholder}" data-sdd-val="${safe}">${safe}</div>`;
+  }).join('');
+  list.innerHTML=html;
+  if(lbl)lbl.textContent=SDD_STATE[key]||placeholder;
+}
+function setSDD(id,key,val,placeholder){
+  SDD_STATE[key]=val;
+  GF[key]=val;
+  const lbl=document.getElementById(id+'-lbl');
+  if(lbl)lbl.textContent=val||placeholder;
+  const dd=document.getElementById(id);
+  if(dd)dd.classList.remove('open');
+  applyGFFilters();
+}
+function filterSDD(id,query){
+  // re-render list with filter
+  const key=id.replace('sdd-','');
+  const allItems=[...new Set(DB.map(r=>key==='team'?r.team:key==='dist'?r.distributor:r.product))].filter(Boolean).sort();
+  const placeholder=key==='team'?'All Teams':key==='dist'?'All Distributors':'All Products';
+  renderSDDList(id,allItems,key,placeholder,query);
+}
+function toggleSDD(id){
+  document.querySelectorAll('.srch-dd.open').forEach(d=>{if(d.id!==id){d.classList.remove('open');const inp=d.querySelector('.srch-dd-inp');if(inp)inp.value='';}});
+  const dd=document.getElementById(id);
+  if(dd){
+    dd.classList.toggle('open');
+    if(dd.classList.contains('open')){
+      const inp=dd.querySelector('.srch-dd-inp');
+      if(inp){inp.value='';inp.focus();}
+      filterSDD(id,'');
+    }
+  }
+}
+// Unified click handler: item selection + outside-close
+document.addEventListener('click',e=>{
+  const item=e.target.closest('[data-sdd-key]');
+  if(item){
+    // Item click — extract values from data attributes
+    const id=item.dataset.sddId;
+    const key=item.dataset.sddKey;
+    const ph=item.dataset.sddPh;
+    const val=item.dataset.sddVal; // empty string = "All"
+    setSDD(id,key,val,ph);
+    e.stopPropagation();
+    return;
+  }
+  // Outside click — close all open dropdowns
+  if(!e.target.closest('.srch-dd')){
+    document.querySelectorAll('.srch-dd.open').forEach(d=>{
+      d.classList.remove('open');
+      const inp=d.querySelector('.srch-dd-inp');
+      if(inp)inp.value='';
+    });
+  }
+});
+
+function applyGFFilters(){
+  const data=fDB();
+  renderKPIs(data);
+  renderOvCharts(data);
+  renderMini(data);
+  renderPills();
+  renderDCards();
+  renderSlowT();
+  renderRepT();
+  renderAnCharts(data);
+  renderTags();
+  // Show/hide clear button
+  const cb=document.getElementById('clear-gf');
+  if(cb)cb.style.display=(GF.team||GF.dist||GF.prod)?'inline-flex':'none';
+}
+function applyGF(){applyGFFilters();}
+// Click-to-filter helpers (toggle off if already active)
+function setTeam(v){const nv=(GF.team===v)?'':v;GF.team=nv;SDD_STATE.team=nv;const l=document.getElementById('sdd-team-lbl');if(l)l.textContent=nv||'All Teams';applyGFFilters();}
+function setDist(v){const nv=(GF.dist===v)?'':v;GF.dist=nv;SDD_STATE.dist=nv;const l=document.getElementById('sdd-dist-lbl');if(l)l.textContent=nv||'All Distributors';applyGFFilters();}
+function setProd(v){const nv=(GF.prod===v)?'':v;GF.prod=nv;SDD_STATE.prod=nv;const l=document.getElementById('sdd-prod-lbl');if(l)l.textContent=nv||'All Products';applyGFFilters();}
+function clearGF(){GF={team:'',dist:'',prod:''};SDD_STATE.team='';SDD_STATE.dist='';SDD_STATE.prod='';['team','dist','prod'].forEach(k=>{const p=k==='team'?'All Teams':k==='dist'?'All Distributors':'All Products';const l=document.getElementById('sdd-'+k+'-lbl');if(l)l.textContent=p;});applyGFFilters();}
 function esc(s){return s.replace(/'/g,"&#39;").replace(/"/g,"&quot;");}
+function renderTags(){
+  let h='';
+  if(GF.team)h+=`<span class="chip info click" onclick="setTeam('${esc(GF.team)}')">Team: ${GF.team} ✕</span> `;
+  if(GF.dist)h+=`<span class="chip info click" onclick="setDist('${esc(GF.dist)}')">Dist: ${GF.dist} ✕</span> `;
+  if(GF.prod)h+=`<span class="chip info click" onclick="setProd('${esc(GF.prod)}')">Prod: ${GF.prod.length>20?GF.prod.slice(0,20)+'…':GF.prod} ✕</span>`;
+  const af=document.getElementById('af-tags'); if(af)af.innerHTML=h;
+  const ob=document.getElementById('ov-badges'); if(ob)ob.innerHTML=h;
+  const cb=document.getElementById('clear-gf');
+  if(cb)cb.style.display=(GF.team||GF.dist||GF.prod)?'inline-flex':'none';
+}
 
 // RENDER ALL
 function renderAll(){
   const data=fDB();
   renderKPIs(data);renderOvCharts(data);renderMini(data);
   renderPills();renderDCards();renderSlowT();renderRepT();renderAnCharts(data);
-  let h='';
-  if(GF.team)h+=`<span class="chip info click" onclick="setTeam('${esc(GF.team)}')">Team: ${GF.team} ✕</span> `;
-  if(GF.dist)h+=`<span class="chip info click" onclick="setDist('${esc(GF.dist)}')">Dist: ${GF.dist} ✕</span> `;
-  if(GF.prod)h+=`<span class="chip info click" onclick="setProd('${esc(GF.prod)}')">Product: ${GF.prod.length>18?GF.prod.slice(0,18)+'…':GF.prod} ✕</span>`;
-  document.getElementById('ov-badges').innerHTML=h;
+  renderTags();
 }
 
 
@@ -932,8 +1141,10 @@ function renderSlowT(pg=null){
   if(!pr.length){tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:35px;color:var(--text3)">No slow-moving inventory for current filter</td></tr>`;document.getElementById('slow-pgn').innerHTML='';return;}
   tb.innerHTML=pr.map(r=>{
     const ex=exS(r),ev=ex*r.price,ratio=r.monthly>0?r.closingStock/r.monthly:0;
+    const sd=stockDays(r),pc=projClosing(r);
     const cat=ratio>4?'<span class="chip danger">CRITICAL</span>':ratio>2.5?'<span class="chip warn">HIGH</span>':'<span class="chip info">MODERATE</span>';
-    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">${fmt(r.closingStock)}</td><td class="mono">${fmt(r.monthly)}</td><td class="mono">${fmt(tgt(r))}</td><td class="mono" style="color:var(--orange)">${fmt(ex)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(ev)}</td><td>${cat}</td></tr>`;
+    const sdCol=sd!==null?(sd>90?'var(--red)':sd>60?'var(--orange)':'var(--green)'):'var(--text3)';
+    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">${fmt(r.closingStock)}</td><td class="mono">${fmt(r.monthly)}</td><td class="mono" style="color:${sdCol};font-weight:600">${sd!==null?sd+'d':'—'}</td><td class="mono" style="color:var(--accent)">${fmt(pc)}</td><td class="mono" style="color:var(--orange)">${fmt(ex)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(ev)}</td><td>${cat}</td></tr>`;
   }).join('');
   pgn('slow-pgn',spg,tp,renderSlowT);
 }
@@ -949,8 +1160,9 @@ function renderRepT(pg=null){
   const tb=document.getElementById('rep-body');
   if(!pr.length){tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:35px;color:var(--green)">✓ All replenishments complete for current filter!</td></tr>`;document.getElementById('rep-pgn').innerHTML='';return;}
   tb.innerHTML=pr.map(r=>{
-    const t2=tgt(r),rm=rem(r),dvr=dv(r),p=rPct(r);
-    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">PKR ${fmt(r.price)}</td><td class="mono">${fmt(t2)}</td><td class="mono" style="color:var(--green)">${fmt(r.invoice)}</td><td class="mono" style="color:var(--orange)">${fmt(rm)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(dvr)}</td><td><div style="display:flex;align-items:center;gap:4px;"><div class="pw" style="width:48px;"><div class="pb ${pbC(p||0)}" style="width:${Math.min(100,p||0).toFixed(0)}%"></div></div><span class="mono" style="font-size:10px">${fP(p)}</span></div></td><td>${prChip(p)}</td></tr>`;
+    const t2=tgt(r),rm=rem(r),dvr=dv(r),p=rPct(r),sd=stockDays(r),pc=projClosing(r);
+    const sdCol=sd!==null?(sd>60?'var(--green)':sd>30?'var(--orange)':'var(--red)'):'var(--text3)';
+    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">PKR ${fmt(r.price)}</td><td class="mono">${fmt(t2)}</td><td class="mono" style="color:var(--green)">${fmt(r.invoice)}</td><td class="mono" style="color:var(--orange)">${fmt(rm)}</td><td class="mono" style="color:${sdCol};font-weight:600">${sd!==null?sd+'d':'—'}</td><td class="mono" style="color:var(--accent)">${fmt(pc)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(dvr)}</td><td><div style="display:flex;align-items:center;gap:4px;"><div class="pw" style="width:48px;"><div class="pb ${pbC(p||0)}" style="width:${Math.min(100,p||0).toFixed(0)}%"></div></div><span class="mono" style="font-size:10px">${fP(p)}</span></div></td><td>${prChip(p)}</td></tr>`;
   }).join('');
   pgn('rep-pgn',rpg,tp,renderRepT);
 }
@@ -987,11 +1199,11 @@ function renderAnCharts(data){
   if(charts.gap)charts.gap.destroy();
   charts.gap=new Chart(document.getElementById('gapC'),{type:'bar',data:{labels:sg.map(r=>r.product.length>15?r.product.slice(0,15)+'…':r.product),datasets:[{label:'Due Value',data:sg.map(dv),backgroundColor:sg.map(r=>{const p=rPct(r)||0;return p>=settings.tG?'rgba(0,229,160,0.3)':p>=settings.tO?'rgba(255,149,0,0.3)':'rgba(255,71,87,0.3)';}),borderColor:sg.map(r=>{const p=rPct(r)||0;return p>=settings.tG?'#00e5a0':p>=settings.tO?'#ff9500':'#ff4757';}),borderWidth:1.5}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4a7090'},grid:{color:gc}},y:{ticks:{color:'#8aadcc',font:{size:8}},grid:{color:gc}}}}});
-  // coverage
-  const cv=[...data].filter(r=>r.monthly>0).map(r=>({product:r.product,days:(r.closingStock/r.monthly*30)})).sort((a,b)=>b.days-a.days).slice(0,12);
+  // coverage — closing days vs projected closing days
+  const cv=[...data].filter(r=>r.monthly>0).map(r=>({product:r.product,days:stockDays(r)||0,projDays:projClosingDays(r)||0})).sort((a,b)=>b.days-a.days).slice(0,12);
   if(charts.cov)charts.cov.destroy();
-  charts.cov=new Chart(document.getElementById('covC'),{type:'bar',data:{labels:cv.map(r=>r.product.length>12?r.product.slice(0,12)+'…':r.product),datasets:[{label:'Days',data:cv.map(r=>r.days.toFixed(0)),backgroundColor:cv.map(r=>r.days>90?'rgba(255,71,87,0.3)':r.days>60?'rgba(255,149,0,0.3)':'rgba(0,212,255,0.22)'),borderColor:cv.map(r=>r.days>90?'#ff4757':r.days>60?'#ff9500':'#00d4ff'),borderWidth:1.5}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4a7090'},grid:{color:gc}},y:{ticks:{color:'#8aadcc',font:{size:8}},grid:{color:gc}}}}});
+  charts.cov=new Chart(document.getElementById('covC'),{type:'bar',data:{labels:cv.map(r=>r.product.length>12?r.product.slice(0,12)+'…':r.product),datasets:[{label:'Current Days',data:cv.map(r=>r.days),backgroundColor:cv.map(r=>r.days>90?'rgba(255,71,87,0.3)':r.days>60?'rgba(255,149,0,0.3)':'rgba(0,212,255,0.22)'),borderColor:cv.map(r=>r.days>90?'#ff4757':r.days>60?'#ff9500':'#00d4ff'),borderWidth:1.5},{label:'Projected Days',data:cv.map(r=>r.projDays),backgroundColor:'rgba(0,255,136,0.15)',borderColor:'#00ff88',borderWidth:1.5,borderDash:[4,3]}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8aadcc',font:{size:9}}}},scales:{x:{ticks:{color:'#4a7090'},grid:{color:gc}},y:{ticks:{color:'#8aadcc',font:{size:8}},grid:{color:gc}}}}});
   // prod
   const pr=[...data].filter(r=>tgt(r)>0).sort((a,b)=>dv(b)-dv(a)).slice(0,8);
   if(charts.prod)charts.prod.destroy();
@@ -1072,11 +1284,16 @@ function admSec(id,btn){
 }
 function setTheme(name,silent=false){
   const b=document.getElementById('body-root');
-  b.classList.remove('theme-light','theme-medium');
+  b.classList.remove('theme-light','theme-medium','theme-teal-gold','theme-cyber');
   if(name==='light')b.classList.add('theme-light');
   else if(name==='medium')b.classList.add('theme-medium');
+  else if(name==='teal-gold')b.classList.add('theme-teal-gold');
+  else if(name==='cyber')b.classList.add('theme-cyber');
   settings.theme=name;svSet();
+  // Update admin theme swatches
   ['dark','medium','light'].forEach(t=>{const el=document.getElementById('tsw-'+t);if(el)el.classList.toggle('active',t===name);});
+  // Update theme bar buttons
+  ['dark','teal-gold','cyber','medium','light'].forEach(t=>{const el=document.getElementById('thb-'+t);if(el)el.classList.toggle('active',t===name);});
   if(!silent){showN(`✓ Theme: ${name.toUpperCase()}`);setTimeout(()=>renderAll(),80);}
 }
 function setAccent(c){document.documentElement.style.setProperty('--accent',c);settings.accent=c;svSet();showN('✓ Accent updated');}
@@ -1120,7 +1337,7 @@ function resetLogo(){
 }
 function clearDB(){if(!confirm('Clear ALL data?'))return;DB=[];GF={team:'',dist:'',prod:''};svDB();popGF();renderAll();showN('Database cleared');closeM('adm-modal');}
 function expData(){
-  const b=new Blob(['PRODUCTS,Ex-Fac. Price,Team Name,Distributor Name,Monthly Avg,AVG x 2.1,Closing Stock,Invoice\n'+DB.map(r=>`${r.product},${r.price},${r.team},"${r.distributor}",${r.monthly},${r.avg21},${r.closingStock},${r.invoice}`).join('\n')],{type:'text/csv'});
+  const b=new Blob(['PRODUCTS,Ex-Fac. Price,Distributor Name,Team,Last month sales,Average sales,AVG x 2.1,Closing Stock,TOTAL ORDER,Invoice,60 Day inventory,MTD Sales\n'+DB.map(r=>`${r.product},${r.price},"${r.distributor}",${r.team},${r.lastMonthSales||0},${r.monthly},${r.avg21},${r.closingStock},${r.totalOrder||0},${r.invoice},${r.inventory60||0},${r.mtdSales||0}`).join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='shaigan_export.csv';a.click();showN('✓ Exported');
 }
 function resetSet(){settings={tG:80,tO:60,sm:2,td:60,accent:'',theme:'dark'};svSet();document.documentElement.style.removeProperty('--accent');setTheme('dark');renderAll();showN('✓ Reset');closeM('adm-modal');}
@@ -1169,14 +1386,16 @@ function initFonts(){
 const DEFAULT_COLS = [
   {label:'PRODUCTS',key:'product',req:true},
   {label:'Ex-Fac. Price',key:'price',req:true},
-  {label:'Team Name',key:'team',req:true},
   {label:'Distributor Name',key:'distributor',req:true},
-  {label:'JAN AS AVERAGE',key:'monthly',req:true},
+  {label:'Team',key:'team',req:false},
+  {label:'Last month sales',key:'lastMonthSales',req:false},
+  {label:'Average sales',key:'monthly',req:true},
   {label:'AVG x 2.1',key:'avg21',req:false},
   {label:'Closing Stock',key:'closingStock',req:true},
+  {label:'TOTAL ORDER',key:'totalOrder',req:true},
   {label:'Invoice',key:'invoice',req:true},
   {label:'60 Day inventory',key:'inventory60',req:false},
-  {label:'TOTAL ORDER',key:'totalOrder',req:false},
+  {label:'MTD Sales',key:'mtdSales',req:false},
 ];
 let colMap = JSON.parse(JSON.stringify(DEFAULT_COLS));
 
@@ -1209,38 +1428,50 @@ function openUpload(){
   renderColMap();
 }
 
-// ══════════════ KPI with units ══════════════
+// ══════════════ KPI with correct logic ══════════════
 function renderKPIs(data){
+  // tp = sum of TOTAL ORDER column (units ordered because closing < avg21)
+  // ti = sum of Invoice column (units actually dispatched)
+  // td = sum of (order - invoice) * price = due value
   let tp=0,ti=0,td=0,sc=0;
   data.forEach(r=>{tp+=tgt(r);ti+=r.invoice;td+=dv(r);if(isSlw(r))sc++;});
   const pct=tp>0?(ti/tp)*100:0;
-  // Planned — units + PKR value
+  const tpVal=data.reduce((a,r)=>a+tgt(r)*r.price,0);
+  const tiVal=data.reduce((a,r)=>a+r.invoice*r.price,0);
+  const duUnits=Math.max(0,tp-ti);
+
+  // Card 1: Total Orders Placed — units + PKR order value
   const pe=document.getElementById('kpi-p');
   if(pe){ const u=document.getElementById('kpi-p-unit'); if(u)u.remove(); pe.textContent=fmt(tp); const s=document.createElement('span'); s.className='kpi-unit'; s.id='kpi-p-unit'; s.textContent=' Units'; pe.appendChild(s); }
   const pv=document.getElementById('kpi-p-val');
-  if(pv){ const tpVal=data.reduce((a,r)=>a+tgt(r)*r.price,0); pv.textContent='PKR '+fmt(tpVal); }
-  // Invoiced — units + PKR value
+  if(pv){ pv.textContent='PKR '+fmt(tpVal); }
+
+  // Card 2: Total Invoiced — units + PKR invoiced value
   const ie=document.getElementById('kpi-i');
   if(ie){ const u=document.getElementById('kpi-i-unit'); if(u)u.remove(); ie.textContent=fmt(ti); const s=document.createElement('span'); s.className='kpi-unit'; s.id='kpi-i-unit'; s.textContent=' Units'; ie.appendChild(s); }
   const iv=document.getElementById('kpi-i-val');
-  if(iv){ const tiVal=data.reduce((a,r)=>a+r.invoice*r.price,0); iv.textContent='PKR '+fmt(tiVal); }
-  // Replenishment % — units gap
+  if(iv){ iv.textContent='PKR '+fmt(tiVal); }
+
+  // Card 3: Replenishment % — percentage + units gap
   const re=document.getElementById('kpi-r'); if(re) re.textContent=fP(pct);
   const rv=document.getElementById('kpi-r-val');
-  if(rv){ rv.textContent=fmt(Math.max(0,tp-ti))+' Units Gap'; }
-  // Due — PKR + units
+  if(rv){ rv.textContent=fmt(duUnits)+' Units Gap'; }
+
+  // Card 4: Due Amount — PKR + units pending
   const de=document.getElementById('kpi-d'); if(de) de.textContent='PKR '+fmt(td);
   const dv2=document.getElementById('kpi-d-val');
-  if(dv2){ dv2.textContent=fmt(Math.max(0,tp-ti))+' Units Pending'; }
-  const ds=document.getElementById('kpi-d-sub'); if(ds) ds.textContent='Pending replenishment value';
-  // Slow SKUs — count + excess value
+  if(dv2){ dv2.textContent=fmt(duUnits)+' Units Pending'; }
+
+  // Card 5: Slow-Moving SKUs — count + PKR excess value
   const se=document.getElementById('kpi-s');
   if(se){ const u=document.getElementById('kpi-s-unit'); if(u)u.remove(); se.textContent=sc; const s=document.createElement('span'); s.className='kpi-unit'; s.id='kpi-s-unit'; s.textContent=' SKUs'; se.appendChild(s); }
   const sv2=document.getElementById('kpi-s-val');
   if(sv2){ const slowVal=data.filter(isSlw).reduce((a,r)=>a+exS(r)*r.price,0); sv2.textContent='PKR '+fmt(slowVal)+' Excess'; }
+
+  // Progress bar section
   document.getElementById('sp').textContent=fmt(tp)+' units';
   document.getElementById('si').textContent=fmt(ti)+' units';
-  document.getElementById('sg').textContent=fmt(tp-ti)+' units';
+  document.getElementById('sg').textContent=fmt(duUnits)+' units';
   document.getElementById('dpct').textContent=pct.toFixed(1)+'%';
   document.getElementById('dpct').style.color=pct>=settings.tG?'var(--green)':pct>=settings.tO?'var(--orange)':'var(--red)';
   document.getElementById('ab').style.width=Math.min(100,pct).toFixed(0)+'%';
@@ -1253,13 +1484,31 @@ function renderKPIs(data){
   document.getElementById('sl-val').textContent='PKR '+fmt(slowExVal);
   document.getElementById('sl-worst').textContent=wp||'—';
   document.getElementById('sl-wsub').textContent=wp?'PKR '+fmt(wv)+' excess value':'';
+
+  // KPI Card — Stock Days (weighted avg days of closing stock across all filtered rows)
+  const withDaily=data.filter(r=>r.monthly>0);
+  let totalWtDays=0,totalMonthly=0;
+  withDaily.forEach(r=>{totalWtDays+=r.closingStock;totalMonthly+=dailyAvg(r);});
+  const avgStockDays=totalMonthly>0?Math.round(totalWtDays/totalMonthly):null;
+  const kpiDaysEl=document.getElementById('kpi-days');
+  if(kpiDaysEl){const u=kpiDaysEl.querySelector('.kpi-unit');if(u)u.remove();kpiDaysEl.textContent=avgStockDays!==null?avgStockDays:'—';const s=document.createElement('span');s.className='kpi-unit';s.textContent=' Days';kpiDaysEl.appendChild(s);}
+  const kpiDaysSub=document.getElementById('kpi-days-sub');
+  if(kpiDaysSub){const daysCol=avgStockDays!==null?(avgStockDays>90?'#ff4757':avgStockDays>60?'#ff9500':'#00ff88'):'#7addb0';kpiDaysSub.style.color=daysCol;kpiDaysSub.style.background=daysCol+'18';kpiDaysSub.textContent=avgStockDays!==null?(avgStockDays>90?'⚠ Overstocked':avgStockDays>60?'Adequate':'⚡ Low Stock'):'No Avg Data';}
+
+  // KPI Card — Projected Closing (Closing + Invoice - MTD Sales)
+  let totalProj=0,totalProjMtd=0;
+  data.forEach(r=>{totalProj+=projClosing(r);totalProjMtd+=(r.mtdSales||0);});
+  const projDaysEl=document.getElementById('kpi-proj');
+  if(projDaysEl){const u=projDaysEl.querySelector('.kpi-unit');if(u)u.remove();projDaysEl.textContent=fmt(totalProj);const s=document.createElement('span');s.className='kpi-unit';s.textContent=' Units';projDaysEl.appendChild(s);}
+  const projDaysSub=document.getElementById('kpi-proj-days');
+  if(projDaysSub){const projAvgDays=totalMonthly>0?Math.round(totalProj/totalMonthly):null;projDaysSub.textContent=projAvgDays!==null?projAvgDays+' Days Cover':'MTD: '+fmt(totalProjMtd)+' Sold';}
 }
 
 // ══════════════ FORMAT DOWNLOAD with col map ══════════════
 function dlFmt(){
   const headers=colMap.map(c=>c.label).join(',');
   const sample=colMap.map(c=>{
-    const ex={product:'Product Name',price:'100.00',team:'Team Alpha',distributor:'Distributor ABC',monthly:'50',avg21:'105',closingStock:'20',invoice:'80',inventory60:'15',totalOrder:'85'};
+    const ex={product:'Product Name',price:'100.00',team:'Team Alpha',distributor:'Distributor ABC',lastMonthSales:'50',monthly:'50',avg21:'105',closingStock:'20',invoice:'80',inventory60:'15',totalOrder:'85',mtdSales:'25'};
     return ex[c.key]||'0';
   }).join(',');
   const b=new Blob([headers+'\n'+sample],{type:'text/csv'});
@@ -1269,25 +1518,23 @@ function dlFmt(){
 // ══════════════ ENHANCED PARSE using colMap ══════════════
 function parseRWithMap(r){
   const c=v=>{if(v===undefined||v===null||v==='')return 0;return parseFloat(String(v).replace(/,/g,''))||0;};
-  // Try to find product by mapped label or fallback
-  const findVal=(keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
-  // Build lookup from colMap
+  const findVal=keys=>{for(const k of keys){const v=r[k];if(v!==undefined&&v!==null&&v!=='')return v;}return '';};
   const mapped={};
   colMap.forEach(col=>{const v=findVal([col.label]);mapped[col.key]=v;});
   const p=mapped.product||r['PRODUCTS']||r['Product'];
   if(!p||!String(p).trim())return null;
-  return{
-    product:String(p).trim(),
+  return{product:String(p).trim(),
     price:c(mapped.price||r['Ex-Fac. Price']||r['Price']),
-    team:String(mapped.team||r['Team Name']||r['Team']||'').trim(),
+    team:String(mapped.team||r['Team']||r['Team Name']||'').trim(),
     distributor:String(mapped.distributor||r['Distributor Name']||r['Distributor']||'').trim(),
-    monthly:c(mapped.monthly||r['JAN AS AVERAGE']||r['Monthly Avg']),
+    lastMonthSales:c(mapped.lastMonthSales||r['Last month sales']||r['Jan-26']||0),
+    monthly:c(mapped.monthly||r['Average sales']||r['JAN AS AVERAGE']||r['Monthly Avg']),
     avg21:c(mapped.avg21||r['AVG x 2.1']),
     closingStock:c(mapped.closingStock||r['Closing Stock']),
-    invoice:c(mapped.invoice||r['Invoice']||r['Invoiced']),
-    inventory60:c(mapped.inventory60||r['60 Day inventory']),
-    totalOrder:c(mapped.totalOrder||r['TOTAL ORDER'])
-  };
+    totalOrder:c(mapped.totalOrder||r['TOTAL ORDER']||0),
+    invoice:c(mapped.invoice||r['Invoice']||r['Invoiced']||0),
+    inventory60:c(mapped.inventory60||r['60 Day inventory']||0),
+    mtdSales:c(mapped.mtdSales||r['MTD Sales']||r['MTD']||0)};
 }
 
 // ══════════════ REPORTS ══════════════
@@ -1383,13 +1630,17 @@ const REPORT_DEFS = {
   },
   'stock-coverage':{
     title:'Stock Coverage Analysis',
-    cols:['Product','Distributor','Team','Closing Stock','Monthly Avg','Coverage (Days)','60D Target Stock','Status'],
-    rows:(data,o)=>data.filter(r=>r.monthly>0).sort((a,b)=>(b.closingStock/b.monthly)-(a.closingStock/a.monthly)).map(r=>{
-      const days=Math.round(r.closingStock/r.monthly*30);
+    cols:['Product','Distributor','Team','Closing Stock','Monthly Avg','Daily Avg','Stock Days','Proj. Closing','Proj. Days','MTD Sales','Status'],
+    rows:(data,o)=>data.filter(r=>r.monthly>0).sort((a,b)=>b.closingStock/b.monthly-a.closingStock/a.monthly).map(r=>{
+      const sd=stockDays(r),pc=projClosing(r),pd=projClosingDays(r);
       return[r.product,r.distributor,r.team,
         o.units?fmt(r.closingStock):'—', o.units?fmt(r.monthly):'—',
-        days+' days', o.units?fmt(tgt(r)):'—',
-        days>90?'OVERSTOCKED':days>60?'ADEQUATE':days>30?'LOW':'CRITICAL'];
+        dailyAvg(r).toFixed(1),
+        sd!==null?sd+' days':'—',
+        o.units?fmt(pc):'—',
+        pd!==null?pd+' days':'—',
+        o.units?fmt(r.mtdSales||0):'—',
+        sd!==null?(sd>90?'OVERSTOCKED':sd>60?'ADEQUATE':sd>30?'LOW':'CRITICAL'):'—'];
     })
   },
   'product-master':{
@@ -1421,12 +1672,17 @@ const REPORT_DEFS = {
   },
   'full-database':{
     title:'Full Database Export',
-    cols:['Product','Team','Distributor','Price (PKR)','Monthly Avg','60D Target','Closing Stock','Invoiced','Remaining','Due Value (PKR)','Rep %','Slow Moving'],
+    cols:['Product','Team','Distributor','Price (PKR)','Monthly Avg','Daily Avg','MTD Sales','Closing Stock','Stock Days','Invoiced','Proj. Closing','Proj. Days','Remaining','Due Value (PKR)','Rep %','Slow Moving'],
     rows:(data,o)=>data.map(r=>[
       r.product,r.team,r.distributor,
       o.value?'PKR '+fmt(r.price):'—',
-      o.units?fmt(r.monthly):'—', o.units?fmt(tgt(r)):'—',
-      o.units?fmt(r.closingStock):'—', o.units?fmt(r.invoice):'—',
+      o.units?fmt(r.monthly):'—', dailyAvg(r).toFixed(1),
+      o.units?fmt(r.mtdSales||0):'—',
+      o.units?fmt(r.closingStock):'—',
+      stockDays(r)!==null?stockDays(r)+' days':'—',
+      o.units?fmt(r.invoice):'—',
+      o.units?fmt(projClosing(r)):'—',
+      projClosingDays(r)!==null?projClosingDays(r)+' days':'—',
       o.units?fmt(rem(r)):'—', o.value?'PKR '+fmt(dv(r)):'—',
       o.pct?fP(rPct(r)):'—', isSlw(r)?'YES':'NO'
     ])
