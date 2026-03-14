@@ -336,6 +336,71 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 .wm{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;padding:9px 0;text-align:center;border-top:1px solid var(--border);margin-top:22px;}
+/* Threshold panel */
+.thr-section{margin-bottom:0;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:11px;}
+.thr-section-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:7px;}
+.thr-section-title::before{content:'';width:3px;height:13px;border-radius:2px;flex-shrink:0;}
+.thr-section-title.s-rep::before{background:var(--green);}
+.thr-section-title.s-cat::before{background:var(--orange);}
+.thr-section-title.s-pri::before{background:var(--red);}
+.thr-section-title.s-days::before{background:var(--purple);}
+.thr-desc{font-size:10px;color:var(--text3);margin-bottom:12px;line-height:1.5;}
+.thr-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;}
+.thr-row.three{grid-template-columns:1fr 1fr 1fr;}
+.thr-field{display:flex;flex-direction:column;gap:5px;}
+.thr-lbl{font-size:9px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);font-weight:600;}
+.thr-inp-wrap{display:flex;align-items:center;gap:7px;}
+.thr-inp{background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none;width:80px;transition:border-color .2s,box-shadow .2s;text-align:center;}
+.thr-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);}
+.thr-inp.inp-red:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,71,87,0.15);}
+.thr-inp.inp-orange:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,149,0,0.15);}
+.thr-inp.inp-green:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,229,160,0.15);}
+.thr-inp.inp-purple:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,0.15);}
+.thr-unit{font-size:10px;color:var(--text3);white-space:nowrap;font-family:'DM Mono',monospace;}
+.thr-slider-wrap{position:relative;padding-top:2px;}
+.thr-slider{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;outline:none;cursor:pointer;margin-top:2px;}
+.thr-slider.sl-green{background:linear-gradient(90deg,var(--green),rgba(0,229,160,0.2));}
+.thr-slider.sl-orange{background:linear-gradient(90deg,var(--orange),rgba(255,149,0,0.2));}
+.thr-slider.sl-red{background:linear-gradient(90deg,var(--red),rgba(255,71,87,0.2));}
+.thr-slider.sl-purple{background:linear-gradient(90deg,var(--purple),rgba(168,85,247,0.2));}
+.thr-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid var(--bg);transition:transform .15s;}
+.thr-slider.sl-green::-webkit-slider-thumb{background:var(--green);box-shadow:0 0 8px rgba(0,229,160,0.6);}
+.thr-slider.sl-orange::-webkit-slider-thumb{background:var(--orange);box-shadow:0 0 8px rgba(255,149,0,0.6);}
+.thr-slider.sl-red::-webkit-slider-thumb{background:var(--red);box-shadow:0 0 8px rgba(255,71,87,0.6);}
+.thr-slider.sl-purple::-webkit-slider-thumb{background:var(--purple);box-shadow:0 0 8px rgba(168,85,247,0.6);}
+.thr-slider-ticks{display:flex;justify-content:space-between;font-size:8px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
+.thr-preview-band{display:flex;border-radius:8px;overflow:hidden;height:26px;margin-top:10px;font-size:9px;font-family:'DM Mono',monospace;border:1px solid var(--border);}
+.thr-band-seg{display:flex;align-items:center;justify-content:center;transition:flex .35s cubic-bezier(.4,0,.2,1);font-weight:700;font-size:9px;white-space:nowrap;overflow:hidden;letter-spacing:.5px;}
+.chip-preview{display:inline-flex;align-items:center;padding:4px 11px;border-radius:6px;font-size:10px;font-family:'DM Mono',monospace;font-weight:700;letter-spacing:.5px;transition:all .2s;}
+.chip-preview.critical{background:rgba(255,71,87,0.15);color:#ff4757;border:1px solid rgba(255,71,87,0.4);}
+.chip-preview.high{background:rgba(255,149,0,0.15);color:#ff9500;border:1px solid rgba(255,149,0,0.4);}
+.chip-preview.moderate{background:rgba(0,212,255,0.12);color:#00d4ff;border:1px solid rgba(0,212,255,0.3);}
+.chip-preview.low-pri{background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.3);}
+.chip-preview.medium-pri{background:rgba(255,149,0,0.12);color:#ff9500;border:1px solid rgba(255,149,0,0.3);}
+.chip-preview.high-pri{background:rgba(255,71,87,0.12);color:#ff4757;border:1px solid rgba(255,71,87,0.3);}
+.chip-preview.days-low{background:rgba(255,71,87,0.12);color:#ff4757;border:1px solid rgba(255,71,87,0.3);}
+.chip-preview.days-medium{background:rgba(255,149,0,0.12);color:#ff9500;border:1px solid rgba(255,149,0,0.3);}
+.chip-preview.days-ok{background:rgba(0,212,255,0.12);color:#00d4ff;border:1px solid rgba(0,212,255,0.3);}
+.chip-preview.days-over{background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.3);}
+.lbl-grp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);}
+.lbl-grp-hdr{grid-column:1/-1;font-size:9px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:2px;font-weight:600;}
+.lbl-item{display:flex;flex-direction:column;gap:3px;}
+.lbl-item-tag{font-size:8px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+.lbl-inp{background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;font-weight:700;padding:5px 9px;outline:none;width:100%;transition:border-color .2s;letter-spacing:.5px;}
+.lbl-inp:focus{border-color:var(--accent);}
+.lbl-inp.li-red:focus{border-color:var(--red);}
+.lbl-inp.li-orange:focus{border-color:var(--orange);}
+.lbl-inp.li-green:focus{border-color:var(--green);}
+.lbl-inp.li-purple:focus{border-color:var(--purple);}
+.prev-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);margin-top:10px;}
+.prev-row-lbl{font-size:8px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+.thr-hint{font-size:9px;font-family:'DM Mono',monospace;color:var(--text3);margin-top:3px;min-height:14px;transition:color .2s;}
+.thr-hint.warn{color:var(--orange);}
+.thr-hint.err{color:var(--red);}
+.thr-stack{display:flex;flex-direction:column;gap:10px;}
+.thr-apply-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:12px;}
+.thr-apply-bar .thr-saved{font-size:10px;color:var(--green);font-family:'DM Mono',monospace;display:none;}
+.lbl-inp:focus{border-color:var(--accent);}
 </style>
 </head>
 <body id="body-root">
@@ -695,12 +760,294 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 
         <!-- THRESHOLDS -->
         <div id="adm-thresholds" style="display:none;">
-          <div class="adm-ttl">Performance Thresholds</div>
-          <div class="fg"><label class="flbl">Green Threshold (%) — Good</label><input type="number" class="finp" id="tg" value="80" min="50" max="100"></div>
-          <div class="fg"><label class="flbl">Orange Threshold (%) — Warning</label><input type="number" class="finp" id="to" value="60" min="20" max="80"></div>
-          <div class="fg"><label class="flbl">Slow-Moving Multiplier (× Monthly Avg)</label><input type="number" class="finp" id="sm" value="2.0" min="1" max="5" step="0.1"></div>
-          <div class="fg"><label class="flbl">Target Stock Days</label><input type="number" class="finp" id="td" value="60" min="30" max="120"></div>
-          <button class="btn btn-primary" onclick="applyThr()">Apply & Refresh</button>
+          <div class="adm-ttl">Thresholds &amp; Category Settings</div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:14px;">All changes preview live. Click <strong style="color:var(--accent)">Apply</strong> to save and refresh the dashboard.</div>
+
+          <div class="thr-stack">
+
+            <!-- ① REPLENISHMENT % ─────────────────────────────── -->
+            <div class="thr-section">
+              <div class="thr-section-title s-rep">📊 Replenishment Achievement %</div>
+              <div class="thr-desc">Colour-codes every distributor, table row and chart bar based on Invoice ÷ Order %. Drag the sliders — the band updates instantly.</div>
+
+              <div class="thr-row">
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--green);">🟢 On Track — threshold (%)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-green" id="tg" value="80" min="50" max="100" step="1" oninput="clampThr('tg',50,100);syncSlider('sg','tg');updateThrPreview()">
+                    <span class="thr-unit">%</span>
+                  </div>
+                  <div class="thr-slider-wrap">
+                    <input type="range" class="thr-slider sl-green" id="sg" min="50" max="100" value="80" oninput="syncInput('tg','sg');updateThrPreview()">
+                    <div class="thr-slider-ticks"><span>50</span><span>65</span><span>80</span><span>100</span></div>
+                  </div>
+                  <div class="thr-hint" id="hint-tg">Rows above this % = On Track ✓</div>
+                </div>
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--orange);">🟡 Warning — threshold (%)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-orange" id="to" value="60" min="20" max="80" step="1" oninput="clampThr('to',20,80);syncSlider('so','to');updateThrPreview()">
+                    <span class="thr-unit">%</span>
+                  </div>
+                  <div class="thr-slider-wrap">
+                    <input type="range" class="thr-slider sl-orange" id="so" min="20" max="80" value="60" oninput="syncInput('to','so');updateThrPreview()">
+                    <div class="thr-slider-ticks"><span>20</span><span>40</span><span>60</span><span>80</span></div>
+                  </div>
+                  <div class="thr-hint" id="hint-to">Rows between Warning–On Track = ⚠ Warning</div>
+                </div>
+              </div>
+
+              <!-- Live band -->
+              <div style="margin-top:4px;">
+                <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px;">
+                  <span>0%</span><span id="band-lo-val">60%</span><span id="band-hi-val">80%</span><span>100%</span>
+                </div>
+                <div class="thr-preview-band" id="rep-band">
+                  <div class="thr-band-seg" id="rep-band-crit" style="background:rgba(255,71,87,0.35);color:#ff4757;">🔴 CRITICAL</div>
+                  <div class="thr-band-seg" id="rep-band-warn" style="background:rgba(255,149,0,0.3);color:#ff9500;">🟡 WARNING</div>
+                  <div class="thr-band-seg" id="rep-band-ok" style="background:rgba(0,229,160,0.25);color:#00e5a0;">🟢 ON TRACK</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ② SLOW-MOVING CATEGORY ───────────────────────── -->
+            <div class="thr-section">
+              <div class="thr-section-title s-cat">🐌 Slow-Moving Category Thresholds</div>
+              <div class="thr-desc">A product is slow-moving when its Closing Stock exceeds the Trigger multiple of Monthly Avg. Two sub-tiers (High → Critical) then colour-code severity.</div>
+
+              <!-- Trigger + sub-tiers side by side -->
+              <div class="thr-row three">
+                <div class="thr-field">
+                  <span class="thr-lbl">🔵 Slow Trigger (×Avg)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp" id="sm" value="2.0" min="1" max="5" step="0.1" oninput="updateThrPreview()">
+                    <span class="thr-unit">× avg</span>
+                  </div>
+                  <div class="thr-hint">Closing &gt; this × Avg = slow-moving</div>
+                </div>
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--orange);">🟡 High — above (×Avg)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-orange" id="smHigh" value="2.5" min="1" max="8" step="0.5" oninput="updateThrPreview()">
+                    <span class="thr-unit">× avg</span>
+                  </div>
+                  <div class="thr-hint">Closing &gt; this × Avg = HIGH</div>
+                </div>
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--red);">🔴 Critical — above (×Avg)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-red" id="smCrit" value="4" min="2" max="10" step="0.5" oninput="updateThrPreview()">
+                    <span class="thr-unit">× avg</span>
+                  </div>
+                  <div class="thr-hint">Closing &gt; this × Avg = CRITICAL</div>
+                </div>
+              </div>
+
+              <!-- Live scale bar -->
+              <div style="margin:8px 0 4px;">
+                <div style="position:relative;height:10px;border-radius:5px;overflow:hidden;background:linear-gradient(90deg,rgba(0,212,255,0.2),rgba(255,149,0,0.3),rgba(255,71,87,0.4));">
+                  <div id="cat-marker-trig" style="position:absolute;top:0;bottom:0;width:2px;background:var(--text3);transition:left .3s;"></div>
+                  <div id="cat-marker-high" style="position:absolute;top:0;bottom:0;width:2px;background:var(--orange);transition:left .3s;"></div>
+                  <div id="cat-marker-crit" style="position:absolute;top:0;bottom:0;width:2px;background:var(--red);transition:left .3s;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;"><span>1×</span><span>3×</span><span>5×</span><span>7×</span><span>10×</span></div>
+              </div>
+
+              <!-- Custom labels -->
+              <div class="lbl-grp">
+                <div class="lbl-grp-hdr">✏ Customise Category Labels (shown in tables & reports)</div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--text3);">Moderate</span>
+                  <input type="text" class="lbl-inp" id="lbl-cat-mod" value="MODERATE" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--orange);">High</span>
+                  <input type="text" class="lbl-inp li-orange" id="lbl-cat-high" value="HIGH" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--red);">Critical</span>
+                  <input type="text" class="lbl-inp li-red" id="lbl-cat-crit" value="CRITICAL" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div></div>
+              </div>
+
+              <!-- Live chip preview -->
+              <div class="prev-row">
+                <span class="prev-row-lbl">Preview →</span>
+                <span class="chip-preview moderate" id="prev-cat-mod">MODERATE</span>
+                <span class="chip-preview high" id="prev-cat-high">HIGH</span>
+                <span class="chip-preview critical" id="prev-cat-crit">CRITICAL</span>
+              </div>
+            </div>
+
+            <!-- ③ PRIORITY ──────────────────────────────────────── -->
+            <div class="thr-section">
+              <div class="thr-section-title s-pri">🎯 Replenishment Priority Thresholds</div>
+              <div class="thr-desc">Priority is assigned in the Replenishment Due table and Follow-Up reports based on Replenishment %. Below Warning = High priority. Between Warning and On-Track = Medium. Above On-Track = Low.</div>
+
+              <!-- Threshold display (derived from rep %) -->
+              <div class="thr-row">
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--red);">🔴 High Priority — Rep% below</span>
+                  <div class="thr-inp-wrap">
+                    <div class="thr-inp" style="background:rgba(255,71,87,0.08);border-color:rgba(255,71,87,0.3);color:var(--red);cursor:default;" id="disp-pri-high">60%</div>
+                    <span class="thr-unit">(= Warning threshold)</span>
+                  </div>
+                  <div class="thr-hint">Linked to Warning % above — adjust there ↑</div>
+                </div>
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--orange);">🟡 Medium Priority — Rep% between</span>
+                  <div class="thr-inp-wrap">
+                    <div class="thr-inp" style="background:rgba(255,149,0,0.08);border-color:rgba(255,149,0,0.3);color:var(--orange);cursor:default;" id="disp-pri-med">60% – 80%</div>
+                  </div>
+                  <div class="thr-hint">Between Warning and On Track thresholds</div>
+                </div>
+              </div>
+              <div class="thr-row">
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--green);">🟢 Low Priority — Rep% above</span>
+                  <div class="thr-inp-wrap">
+                    <div class="thr-inp" style="background:rgba(0,229,160,0.08);border-color:rgba(0,229,160,0.3);color:var(--green);cursor:default;" id="disp-pri-low">80%</div>
+                    <span class="thr-unit">(= On Track threshold)</span>
+                  </div>
+                  <div class="thr-hint">Linked to On Track % above — adjust there ↑</div>
+                </div>
+                <div></div>
+              </div>
+
+              <!-- Priority label customisation -->
+              <div class="lbl-grp">
+                <div class="lbl-grp-hdr">✏ Customise Priority Labels (shown in tables, reports &amp; follow-up actions)</div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--red);">High Priority</span>
+                  <input type="text" class="lbl-inp li-red" id="lbl-pri-high" value="HIGH" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--orange);">Medium Priority</span>
+                  <input type="text" class="lbl-inp li-orange" id="lbl-pri-med" value="MEDIUM" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--green);">Low Priority</span>
+                  <input type="text" class="lbl-inp li-green" id="lbl-pri-low" value="LOW" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag">On Track (follow-up)</span>
+                  <input type="text" class="lbl-inp" id="lbl-pri-ontrack" value="On Track" maxlength="14" oninput="updateThrPreview()">
+                </div>
+              </div>
+
+              <!-- Live chip preview -->
+              <div class="prev-row">
+                <span class="prev-row-lbl">Preview →</span>
+                <span class="chip-preview high-pri" id="prev-pri-high">HIGH</span>
+                <span class="chip-preview medium-pri" id="prev-pri-med">MEDIUM</span>
+                <span class="chip-preview low-pri" id="prev-pri-low">LOW</span>
+                <span class="chip-preview moderate" id="prev-pri-ontrack" style="color:var(--green);border-color:rgba(0,229,160,0.3);">On Track</span>
+              </div>
+            </div>
+
+            <!-- ④ STOCK DAYS ─────────────────────────────────── -->
+            <div class="thr-section">
+              <div class="thr-section-title s-days">📅 Stock Days — Coverage Thresholds</div>
+              <div class="thr-desc">Classifies how many days of stock are on hand (Closing ÷ Daily Avg Sales). Colours the Stock Days KPI card, coverage chart bars and all table cells.</div>
+
+              <!-- Three sliders in a row -->
+              <div class="thr-row three">
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--red);">🔴 Low — below (days)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-red" id="daysLow" value="30" min="7" max="89" step="1" oninput="clampThr('daysLow',7,89);syncSlider('sdLow','daysLow');updateThrPreview()">
+                    <span class="thr-unit">days</span>
+                  </div>
+                  <div class="thr-slider-wrap">
+                    <input type="range" class="thr-slider sl-red" id="sdLow" min="7" max="89" value="30" oninput="syncInput('daysLow','sdLow');updateThrPreview()">
+                    <div class="thr-slider-ticks"><span>7</span><span>30</span><span>60</span><span>89</span></div>
+                  </div>
+                  <div class="thr-hint" id="hint-dl">Stock &lt; this many days = Low ⚠</div>
+                </div>
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--orange);">🟡 Medium — below (days)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-orange" id="daysMed" value="60" min="8" max="179" step="1" oninput="clampThr('daysMed',8,179);syncSlider('sdMed','daysMed');updateThrPreview()">
+                    <span class="thr-unit">days</span>
+                  </div>
+                  <div class="thr-slider-wrap">
+                    <input type="range" class="thr-slider sl-orange" id="sdMed" min="8" max="179" value="60" oninput="syncInput('daysMed','sdMed');updateThrPreview()">
+                    <div class="thr-slider-ticks"><span>8</span><span>45</span><span>90</span><span>179</span></div>
+                  </div>
+                  <div class="thr-hint" id="hint-dm">Low ≤ stock &lt; this = Medium</div>
+                </div>
+                <div class="thr-field">
+                  <span class="thr-lbl" style="color:var(--purple);">🟣 Overstock — above (days)</span>
+                  <div class="thr-inp-wrap">
+                    <input type="number" class="thr-inp inp-purple" id="daysOver" value="90" min="9" max="365" step="1" oninput="clampThr('daysOver',9,365);syncSlider('sdOver','daysOver');updateThrPreview()">
+                    <span class="thr-unit">days</span>
+                  </div>
+                  <div class="thr-slider-wrap">
+                    <input type="range" class="thr-slider sl-purple" id="sdOver" min="9" max="365" value="90" oninput="syncInput('daysOver','sdOver');updateThrPreview()">
+                    <div class="thr-slider-ticks"><span>9</span><span>90</span><span>180</span><span>365</span></div>
+                  </div>
+                  <div class="thr-hint" id="hint-do">Stock ≥ this many days = Overstock 🟣</div>
+                </div>
+              </div>
+
+              <!-- Live gradient band -->
+              <div style="margin-top:6px;">
+                <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px;">
+                  <span>0d</span>
+                  <span id="days-band-lo">30d</span>
+                  <span id="days-band-med">60d</span>
+                  <span id="days-band-over">90d</span>
+                  <span>365d</span>
+                </div>
+                <div class="thr-preview-band" id="days-band">
+                  <div class="thr-band-seg" id="days-band-seg-low" style="background:rgba(255,71,87,0.35);color:#ff4757;">🔴 LOW</div>
+                  <div class="thr-band-seg" id="days-band-seg-med" style="background:rgba(255,149,0,0.3);color:#ff9500;">🟡 MEDIUM</div>
+                  <div class="thr-band-seg" id="days-band-seg-ok" style="background:rgba(0,212,255,0.22);color:#00d4ff;">🔵 ADEQUATE</div>
+                  <div class="thr-band-seg" id="days-band-seg-over" style="background:rgba(168,85,247,0.3);color:#a855f7;">🟣 OVERSTOCK</div>
+                </div>
+                <div class="thr-hint" id="hint-days-range" style="text-align:center;"></div>
+              </div>
+
+              <!-- Custom labels -->
+              <div class="lbl-grp">
+                <div class="lbl-grp-hdr">✏ Customise Status Labels (shown in KPI cards, tables &amp; reports)</div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--red);">Low Stock</span>
+                  <input type="text" class="lbl-inp li-red" id="lbl-days-low" value="LOW" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--orange);">Medium Stock</span>
+                  <input type="text" class="lbl-inp li-orange" id="lbl-days-med" value="MEDIUM" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:#00d4ff;">Adequate Stock</span>
+                  <input type="text" class="lbl-inp" id="lbl-days-ok" value="ADEQUATE" maxlength="14" oninput="updateThrPreview()">
+                </div>
+                <div class="lbl-item">
+                  <span class="lbl-item-tag" style="color:var(--purple);">Overstock</span>
+                  <input type="text" class="lbl-inp li-purple" id="lbl-days-over" value="OVERSTOCK" maxlength="14" oninput="updateThrPreview()">
+                </div>
+              </div>
+
+              <!-- Live chip preview -->
+              <div class="prev-row">
+                <span class="prev-row-lbl">Preview →</span>
+                <span class="chip-preview days-low" id="prev-days-low">LOW</span>
+                <span class="chip-preview days-medium" id="prev-days-med">MEDIUM</span>
+                <span class="chip-preview days-ok" id="prev-days-ok">ADEQUATE</span>
+                <span class="chip-preview days-over" id="prev-days-over">OVERSTOCK</span>
+              </div>
+            </div>
+
+          </div><!-- /thr-stack -->
+
+          <!-- Apply bar ───────────────────────────────────────── -->
+          <div class="thr-apply-bar">
+            <button class="btn btn-primary" onclick="applyThr()">✓ Apply All &amp; Refresh Dashboard</button>
+            <button class="btn btn-ghost" onclick="resetThr()">↺ Reset to Defaults</button>
+            <span class="thr-saved" id="thr-saved-msg">✓ Saved!</span>
+          </div>
         </div>
 
         <!-- BRANDING -->
@@ -828,7 +1175,15 @@ td.bold{font-weight:600;color:var(--text);}td.mono{font-family:'DM Mono',monospa
 Chart.defaults.font.family="'Outfit',sans-serif";
 
 // ── STATE ──
-let DB=[], GF={team:'',dist:'',prod:''}, settings={tG:80,tO:60,sm:2,td:60,accent:'',theme:'dark'};
+let DB=[], GF={team:'',dist:'',prod:''},
+settings={
+  tG:80, tO:60, sm:2, td:60, accent:'', theme:'dark',
+  smCrit:4, smHigh:2.5,
+  lblCatCrit:'CRITICAL', lblCatHigh:'HIGH', lblCatMod:'MODERATE',
+  lblPriHigh:'HIGH', lblPriMed:'MEDIUM', lblPriLow:'LOW', lblPriOntrack:'On Track',
+  daysLow:30, daysMed:60, daysOver:90,
+  lblDaysLow:'LOW', lblDaysMed:'MEDIUM', lblDaysOk:'ADEQUATE', lblDaysOver:'OVERSTOCK'
+};
 let charts={}, sortS={}, spg=1, rpg=1, PG=20;
 let pendingFiles=[];
 
@@ -939,8 +1294,42 @@ function projClosingDays(r){const d=dailyAvg(r);return d>0?Math.round(projClosin
 function fmt(n){return Math.round(n).toLocaleString('en-PK');}
 function fP(n){return n!==null?n.toFixed(1)+'%':'—';}
 function pbC(p){return p>=settings.tG?'high':p>=settings.tO?'mid':'low';}
-function scChip(p){if(p===null)return '<span class="chip grey">N/A</span>';if(p>=settings.tG)return '<span class="chip ok">✓ On Track</span>';if(p>=settings.tO)return '<span class="chip warn">⚠ Warning</span>';return '<span class="chip danger">✗ Critical</span>';}
-function prChip(p){if(p===null)return '<span class="chip grey">—</span>';if(p>=settings.tG)return '<span class="chip ok">LOW</span>';if(p>=settings.tO)return '<span class="chip warn">MEDIUM</span>';return '<span class="chip danger">HIGH</span>';}
+// Status chip for distributors/summary (On Track / Warning / Critical)
+function scChip(p){
+  if(p===null)return '<span class="chip grey">N/A</span>';
+  if(p>=settings.tG)return `<span class="chip ok">✓ ${settings.lblPriOntrack}</span>`;
+  if(p>=settings.tO)return `<span class="chip warn">⚠ Warning</span>`;
+  return `<span class="chip danger">✗ ${settings.lblCatCrit}</span>`;
+}
+// Priority chip for replenishment due (HIGH / MEDIUM / LOW)
+function prChip(p){
+  if(p===null)return '<span class="chip grey">—</span>';
+  if(p>=settings.tG)return `<span class="chip ok">${settings.lblPriLow}</span>`;
+  if(p>=settings.tO)return `<span class="chip warn">${settings.lblPriMed}</span>`;
+  return `<span class="chip danger">${settings.lblPriHigh}</span>`;
+}
+// Category chip for slow-moving (CRITICAL / HIGH / MODERATE)
+function catChip(ratio){
+  if(ratio>settings.smCrit)return `<span class="chip danger">${settings.lblCatCrit}</span>`;
+  if(ratio>settings.smHigh)return `<span class="chip warn">${settings.lblCatHigh}</span>`;
+  return `<span class="chip info">${settings.lblCatMod}</span>`;
+}
+// Stock days chip (LOW / MEDIUM / ADEQUATE / OVERSTOCK)
+function daysChip(days){
+  if(days===null)return '<span class="chip grey">—</span>';
+  if(days<settings.daysLow)return `<span class="chip danger">${settings.lblDaysLow}</span>`;
+  if(days<settings.daysMed)return `<span class="chip warn">${settings.lblDaysMed}</span>`;
+  if(days<settings.daysOver)return `<span class="chip info">${settings.lblDaysOk}</span>`;
+  return `<span class="chip" style="background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.25);">${settings.lblDaysOver}</span>`;
+}
+// Stock days color for inline coloring
+function daysColor(days){
+  if(days===null)return 'var(--text3)';
+  if(days<settings.daysLow)return 'var(--red)';
+  if(days<settings.daysMed)return 'var(--orange)';
+  if(days<settings.daysOver)return 'var(--green)';
+  return 'var(--purple)';
+}
 function dSumm(data){
   const m={};(data||fDB()).forEach(r=>{const k=r.distributor;if(!m[k])m[k]={distributor:k,teams:new Set(),planned:0,invoiced:0,due:0,slow:0};m[k].teams.add(r.team);m[k].planned+=tgt(r);m[k].invoiced+=r.invoice;m[k].due+=dv(r);if(isSlw(r))m[k].slow++;});
   return Object.values(m).map(d=>({...d,teams:[...d.teams].join(', '),pct:d.planned>0?(d.invoiced/d.planned)*100:null}));
@@ -1142,8 +1531,8 @@ function renderSlowT(pg=null){
   tb.innerHTML=pr.map(r=>{
     const ex=exS(r),ev=ex*r.price,ratio=r.monthly>0?r.closingStock/r.monthly:0;
     const sd=stockDays(r),pc=projClosing(r);
-    const cat=ratio>4?'<span class="chip danger">CRITICAL</span>':ratio>2.5?'<span class="chip warn">HIGH</span>':'<span class="chip info">MODERATE</span>';
-    const sdCol=sd!==null?(sd>90?'var(--red)':sd>60?'var(--orange)':'var(--green)'):'var(--text3)';
+    const cat=catChip(ratio);
+    const sdCol=daysColor(sd);
     return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">${fmt(r.closingStock)}</td><td class="mono">${fmt(r.monthly)}</td><td class="mono" style="color:${sdCol};font-weight:600">${sd!==null?sd+'d':'—'}</td><td class="mono" style="color:var(--accent)">${fmt(pc)}</td><td class="mono" style="color:var(--orange)">${fmt(ex)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(ev)}</td><td>${cat}</td></tr>`;
   }).join('');
   pgn('slow-pgn',spg,tp,renderSlowT);
@@ -1161,8 +1550,7 @@ function renderRepT(pg=null){
   if(!pr.length){tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:35px;color:var(--green)">✓ All replenishments complete for current filter!</td></tr>`;document.getElementById('rep-pgn').innerHTML='';return;}
   tb.innerHTML=pr.map(r=>{
     const t2=tgt(r),rm=rem(r),dvr=dv(r),p=rPct(r),sd=stockDays(r),pc=projClosing(r);
-    const sdCol=sd!==null?(sd>60?'var(--green)':sd>30?'var(--orange)':'var(--red)'):'var(--text3)';
-    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">PKR ${fmt(r.price)}</td><td class="mono">${fmt(t2)}</td><td class="mono" style="color:var(--green)">${fmt(r.invoice)}</td><td class="mono" style="color:var(--orange)">${fmt(rm)}</td><td class="mono" style="color:${sdCol};font-weight:600">${sd!==null?sd+'d':'—'}</td><td class="mono" style="color:var(--accent)">${fmt(pc)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(dvr)}</td><td><div style="display:flex;align-items:center;gap:4px;"><div class="pw" style="width:48px;"><div class="pb ${pbC(p||0)}" style="width:${Math.min(100,p||0).toFixed(0)}%"></div></div><span class="mono" style="font-size:10px">${fP(p)}</span></div></td><td>${prChip(p)}</td></tr>`;
+    return`<tr><td class="bold">${r.product}</td><td style="cursor:pointer;color:var(--accent)" onclick="setDist('${esc(r.distributor)}')">${r.distributor}</td><td><span class="chip grey click" onclick="setTeam('${esc(r.team)}')">${r.team}</span></td><td class="mono">PKR ${fmt(r.price)}</td><td class="mono">${fmt(t2)}</td><td class="mono" style="color:var(--green)">${fmt(r.invoice)}</td><td class="mono" style="color:var(--orange)">${fmt(rm)}</td><td>${daysChip(sd)}</td><td class="mono" style="color:var(--accent)">${fmt(pc)}</td><td class="mono" style="color:var(--red);font-weight:600">PKR ${fmt(dvr)}</td><td><div style="display:flex;align-items:center;gap:4px;"><div class="pw" style="width:48px;"><div class="pb ${pbC(p||0)}" style="width:${Math.min(100,p||0).toFixed(0)}%"></div></div><span class="mono" style="font-size:10px">${fP(p)}</span></div></td><td>${prChip(p)}</td></tr>`;
   }).join('');
   pgn('rep-pgn',rpg,tp,renderRepT);
 }
@@ -1202,7 +1590,7 @@ function renderAnCharts(data){
   // coverage — closing days vs projected closing days
   const cv=[...data].filter(r=>r.monthly>0).map(r=>({product:r.product,days:stockDays(r)||0,projDays:projClosingDays(r)||0})).sort((a,b)=>b.days-a.days).slice(0,12);
   if(charts.cov)charts.cov.destroy();
-  charts.cov=new Chart(document.getElementById('covC'),{type:'bar',data:{labels:cv.map(r=>r.product.length>12?r.product.slice(0,12)+'…':r.product),datasets:[{label:'Current Days',data:cv.map(r=>r.days),backgroundColor:cv.map(r=>r.days>90?'rgba(255,71,87,0.3)':r.days>60?'rgba(255,149,0,0.3)':'rgba(0,212,255,0.22)'),borderColor:cv.map(r=>r.days>90?'#ff4757':r.days>60?'#ff9500':'#00d4ff'),borderWidth:1.5},{label:'Projected Days',data:cv.map(r=>r.projDays),backgroundColor:'rgba(0,255,136,0.15)',borderColor:'#00ff88',borderWidth:1.5,borderDash:[4,3]}]},
+  charts.cov=new Chart(document.getElementById('covC'),{type:'bar',data:{labels:cv.map(r=>r.product.length>12?r.product.slice(0,12)+'…':r.product),datasets:[{label:'Current Days',data:cv.map(r=>r.days),backgroundColor:cv.map(r=>r.days>=settings.daysOver?'rgba(168,85,247,0.3)':r.days>=settings.daysMed?'rgba(0,212,255,0.22)':r.days>=settings.daysLow?'rgba(255,149,0,0.3)':'rgba(255,71,87,0.3)'),borderColor:cv.map(r=>r.days>=settings.daysOver?'#a855f7':r.days>=settings.daysMed?'#00d4ff':r.days>=settings.daysLow?'#ff9500':'#ff4757'),borderWidth:1.5},{label:'Projected Days',data:cv.map(r=>r.projDays),backgroundColor:'rgba(0,255,136,0.15)',borderColor:'#00ff88',borderWidth:1.5,borderDash:[4,3]}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8aadcc',font:{size:9}}}},scales:{x:{ticks:{color:'#4a7090'},grid:{color:gc}},y:{ticks:{color:'#8aadcc',font:{size:8}},grid:{color:gc}}}}});
   // prod
   const pr=[...data].filter(r=>tgt(r)>0).sort((a,b)=>dv(b)-dv(a)).slice(0,8);
@@ -1266,11 +1654,97 @@ function dlFmt(){
 
 // ADMIN
 function openAdmin(){openM('adm-modal');document.getElementById('adm-login').style.display='block';document.getElementById('adm-panel').style.display='none';document.getElementById('adm-pw').value='';document.getElementById('adm-lmsg').innerHTML='';}
+function syncSlider(sliderId,inputId){const s=document.getElementById(sliderId),inp=document.getElementById(inputId);if(s&&inp)s.value=inp.value;}
+function syncInput(inputId,sliderId){const s=document.getElementById(sliderId),inp=document.getElementById(inputId);if(s&&inp)inp.value=s.value;}
+function clampThr(id,mn,mx){const el=document.getElementById(id);if(!el)return;let v=parseFloat(el.value);if(isNaN(v))return;el.value=Math.min(mx,Math.max(mn,v));}
+function updateThrPreview(){
+  const _g=id=>parseFloat(document.getElementById(id)?.value)||0;
+  const _t=id=>document.getElementById(id)?.value||'';
+  const _s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+
+  // ── Rep % band ──
+  const tg=_g('tg')||80, to=_g('to')||60;
+  const critW=Math.max(1,to), warnW=Math.max(1,tg-to), okW=Math.max(1,100-tg);
+  ['rep-band-crit','rep-band-warn','rep-band-ok'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.style.flex=[critW,warnW,okW][i];
+  });
+  // Update derived priority display boxes
+  _s('disp-pri-high', to+'%');
+  _s('disp-pri-med', to+'% – '+tg+'%');
+  _s('disp-pri-low', tg+'%');
+  // Update band value labels
+  _s('band-lo-val', to+'%');
+  _s('band-hi-val', tg+'%');
+  // Validation hint
+  const hintTo=document.getElementById('hint-to');
+  if(hintTo){if(to>=tg){hintTo.textContent='⚠ Warning must be less than On Track!';hintTo.className='thr-hint err';}else{hintTo.textContent='Rows between '+to+'%–'+tg+'% = ⚠ Warning';hintTo.className='thr-hint';}}
+
+  // ── Category chips ──
+  _s('prev-cat-mod', _t('lbl-cat-mod')||'MODERATE');
+  _s('prev-cat-high', _t('lbl-cat-high')||'HIGH');
+  _s('prev-cat-crit', _t('lbl-cat-crit')||'CRITICAL');
+  // Category scale markers (max scale = 10)
+  const sm=_g('sm')||2, smH=_g('smHigh')||2.5, smC=_g('smCrit')||4;
+  const toP=v=>Math.min(98,Math.max(2,((v-1)/(10-1))*100));
+  ['cat-marker-trig','cat-marker-high','cat-marker-crit'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.style.left=toP([sm,smH,smC][i])+'%';
+  });
+
+  // ── Priority chips ──
+  _s('prev-pri-high', _t('lbl-pri-high')||'HIGH');
+  _s('prev-pri-med', _t('lbl-pri-med')||'MEDIUM');
+  _s('prev-pri-low', _t('lbl-pri-low')||'LOW');
+  _s('prev-pri-ontrack', _t('lbl-pri-ontrack')||'On Track');
+
+  // ── Stock days band ──
+  const dL=_g('daysLow')||30, dM=_g('daysMed')||60, dO=_g('daysOver')||90;
+  const MAX=365;
+  const lowW=Math.max(1,dL), medW=Math.max(1,dM-dL), okW2=Math.max(1,dO-dM), overW=Math.max(1,MAX-dO);
+  ['days-band-seg-low','days-band-seg-med','days-band-seg-ok','days-band-seg-over'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.style.flex=[lowW,medW,okW2,overW][i];
+  });
+  _s('days-band-lo', dL+'d');
+  _s('days-band-med', dM+'d');
+  _s('days-band-over', dO+'d');
+  // Days band segment labels from custom inputs
+  const dLow=_t('lbl-days-low')||'LOW', dMed=_t('lbl-days-med')||'MEDIUM';
+  const dOk=_t('lbl-days-ok')||'ADEQUATE', dOver=_t('lbl-days-over')||'OVERSTOCK';
+  ['days-band-seg-low','days-band-seg-med','days-band-seg-ok','days-band-seg-over'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=['🔴 '+dLow,'🟡 '+dMed,'🔵 '+dOk,'🟣 '+dOver][i];
+  });
+  // Days chip previews
+  _s('prev-days-low', dLow); _s('prev-days-med', dMed); _s('prev-days-ok', dOk); _s('prev-days-over', dOver);
+  // Validation
+  const hintDaysRange=document.getElementById('hint-days-range');
+  if(hintDaysRange){
+    if(dL>=dM||dM>=dO){hintDaysRange.textContent='⚠ Values must be ascending: Low < Medium < Overstock';hintDaysRange.className='thr-hint err';}
+    else{hintDaysRange.textContent='Range: Low 0–'+dL+'d | Medium '+dL+'–'+dM+'d | Adequate '+dM+'–'+dO+'d | Overstock >'+dO+'d';hintDaysRange.className='thr-hint';}
+  }
+  // Hints
+  const hDl=document.getElementById('hint-dl'); if(hDl)hDl.textContent='Stock < '+dL+'d = '+dLow;
+  const hDm=document.getElementById('hint-dm'); if(hDm)hDm.textContent=dL+'d ≤ stock < '+dM+'d = '+dMed;
+  const hDo=document.getElementById('hint-do'); if(hDo)hDo.textContent='Stock ≥ '+dO+'d = '+dOver;
+}
 function chkAdm(){
   if(document.getElementById('adm-pw').value!=='Abc@123'){document.getElementById('adm-lmsg').innerHTML='<div class="msg error">❌ Incorrect admin password.</div>';return;}
   document.getElementById('adm-login').style.display='none';
   document.getElementById('adm-panel').style.display='block';
-  document.getElementById('tg').value=settings.tG;document.getElementById('to').value=settings.tO;document.getElementById('sm').value=settings.sm;document.getElementById('td').value=settings.td;
+  // Populate all threshold fields
+  const _sv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+  _sv('tg',settings.tG); _sv('to',settings.tO); _sv('sm',settings.sm);
+  _sv('smCrit',settings.smCrit||4); _sv('smHigh',settings.smHigh||2.5);
+  _sv('daysLow',settings.daysLow||30); _sv('daysMed',settings.daysMed||60); _sv('daysOver',settings.daysOver||90);
+  _sv('lbl-cat-crit',settings.lblCatCrit||'CRITICAL'); _sv('lbl-cat-high',settings.lblCatHigh||'HIGH'); _sv('lbl-cat-mod',settings.lblCatMod||'MODERATE');
+  _sv('lbl-pri-high',settings.lblPriHigh||'HIGH'); _sv('lbl-pri-med',settings.lblPriMed||'MEDIUM'); _sv('lbl-pri-low',settings.lblPriLow||'LOW'); _sv('lbl-pri-ontrack',settings.lblPriOntrack||'On Track');
+  _sv('lbl-days-low',settings.lblDaysLow||'LOW'); _sv('lbl-days-med',settings.lblDaysMed||'MEDIUM'); _sv('lbl-days-ok',settings.lblDaysOk||'ADEQUATE'); _sv('lbl-days-over',settings.lblDaysOver||'OVERSTOCK');
+  // Sync sliders
+  syncSlider('sg','tg'); syncSlider('so','to');
+  syncSlider('sdLow','daysLow'); syncSlider('sdMed','daysMed'); syncSlider('sdOver','daysOver');
+  updateThrPreview();
   document.getElementById('db-stats').textContent=`${DB.length} SKU records | ${[...new Set(DB.map(r=>r.distributor))].length} Distributors | ${[...new Set(DB.map(r=>r.team))].length} Teams`;
   ['dark','medium','light'].forEach(t=>document.getElementById('tsw-'+t).classList.toggle('active',settings.theme===t));
   const fnB=document.getElementById('fn-body');if(fnB)fnB.value=settings.fontBody||'Calibri';
@@ -1280,7 +1754,9 @@ function chkAdm(){
 function admSec(id,btn){
   ['theme','fonts','thresholds','branding','data'].forEach(s=>{const el=document.getElementById('adm-'+s);if(el)el.style.display='none';});
   document.querySelectorAll('.adm-mi').forEach(el=>el.classList.remove('active'));
-  document.getElementById('adm-'+id).style.display='block';btn.classList.add('active');
+  document.getElementById('adm-'+id).style.display='block';
+  if(btn)btn.classList.add('active');
+  if(id==='thresholds')updateThrPreview();
 }
 function setTheme(name,silent=false){
   const b=document.getElementById('body-root');
@@ -1297,7 +1773,55 @@ function setTheme(name,silent=false){
   if(!silent){showN(`✓ Theme: ${name.toUpperCase()}`);setTimeout(()=>renderAll(),80);}
 }
 function setAccent(c){document.documentElement.style.setProperty('--accent',c);settings.accent=c;svSet();showN('✓ Accent updated');}
-function applyThr(){settings.tG=parseFloat(document.getElementById('tg').value)||80;settings.tO=parseFloat(document.getElementById('to').value)||60;settings.sm=parseFloat(document.getElementById('sm').value)||2;settings.td=parseFloat(document.getElementById('td').value)||60;svSet();renderAll();showN('✓ Thresholds updated');closeM('adm-modal');}
+function applyThr(){
+  const _g=id=>parseFloat(document.getElementById(id)?.value)||0;
+  const _t=id=>document.getElementById(id)?.value||'';
+  // Validate ordering
+  const tg=_g('tg')||80, to=_g('to')||60;
+  const dL=_g('daysLow')||30, dM=_g('daysMed')||60, dO=_g('daysOver')||90;
+  if(to>=tg){showN('⚠ Warning % must be less than On Track %',true);return;}
+  if(dL>=dM||dM>=dO){showN('⚠ Days must be: Low < Medium < Overstock',true);return;}
+  // Replenishment % thresholds
+  settings.tG=tg; settings.tO=to;
+  // Slow-moving multipliers
+  settings.sm=_g('sm')||2;
+  settings.smCrit=_g('smCrit')||4;
+  settings.smHigh=_g('smHigh')||2.5;
+  // Category labels
+  settings.lblCatCrit=_t('lbl-cat-crit')||'CRITICAL';
+  settings.lblCatHigh=_t('lbl-cat-high')||'HIGH';
+  settings.lblCatMod=_t('lbl-cat-mod')||'MODERATE';
+  // Priority labels
+  settings.lblPriHigh=_t('lbl-pri-high')||'HIGH';
+  settings.lblPriMed=_t('lbl-pri-med')||'MEDIUM';
+  settings.lblPriLow=_t('lbl-pri-low')||'LOW';
+  settings.lblPriOntrack=_t('lbl-pri-ontrack')||'On Track';
+  // Stock days thresholds
+  settings.daysLow=dL; settings.daysMed=dM; settings.daysOver=dO;
+  // Stock days labels
+  settings.lblDaysLow=_t('lbl-days-low')||'LOW';
+  settings.lblDaysMed=_t('lbl-days-med')||'MEDIUM';
+  settings.lblDaysOk=_t('lbl-days-ok')||'ADEQUATE';
+  settings.lblDaysOver=_t('lbl-days-over')||'OVERSTOCK';
+  svSet(); renderAll();
+  // Flash saved badge
+  const msg=document.getElementById('thr-saved-msg');
+  if(msg){msg.style.display='inline';setTimeout(()=>msg.style.display='none',2500);}
+  showN('✓ Thresholds saved & dashboard refreshed');
+  closeM('adm-modal');
+}
+function resetThr(){
+  const DEF={tg:80,to:60,sm:2,smCrit:4,smHigh:2.5,daysLow:30,daysMed:60,daysOver:90};
+  Object.entries(DEF).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v;});
+  [['lbl-cat-crit','CRITICAL'],['lbl-cat-high','HIGH'],['lbl-cat-mod','MODERATE'],
+   ['lbl-pri-high','HIGH'],['lbl-pri-med','MEDIUM'],['lbl-pri-low','LOW'],['lbl-pri-ontrack','On Track'],
+   ['lbl-days-low','LOW'],['lbl-days-med','MEDIUM'],['lbl-days-ok','ADEQUATE'],['lbl-days-over','OVERSTOCK']
+  ].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v;});
+  syncSlider('sg','tg'); syncSlider('so','to');
+  syncSlider('sdLow','daysLow'); syncSlider('sdMed','daysMed'); syncSlider('sdOver','daysOver');
+  updateThrPreview();
+  showN('✓ All thresholds reset to defaults');
+}
 function applyBrand(){
   const co=document.getElementById('bn-co').value||'Shaigan Pharma';
   const sub=document.getElementById('bn-sub').value||'Distribution Effectiveness Monitor';
@@ -1340,7 +1864,7 @@ function expData(){
   const b=new Blob(['PRODUCTS,Ex-Fac. Price,Distributor Name,Team,Last month sales,Average sales,AVG x 2.1,Closing Stock,TOTAL ORDER,Invoice,60 Day inventory,MTD Sales\n'+DB.map(r=>`${r.product},${r.price},"${r.distributor}",${r.team},${r.lastMonthSales||0},${r.monthly},${r.avg21},${r.closingStock},${r.totalOrder||0},${r.invoice},${r.inventory60||0},${r.mtdSales||0}`).join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='shaigan_export.csv';a.click();showN('✓ Exported');
 }
-function resetSet(){settings={tG:80,tO:60,sm:2,td:60,accent:'',theme:'dark'};svSet();document.documentElement.style.removeProperty('--accent');setTheme('dark');renderAll();showN('✓ Reset');closeM('adm-modal');}
+function resetSet(){settings={tG:80,tO:60,sm:2,td:60,accent:'',theme:'dark',smCrit:4,smHigh:2.5,lblCatCrit:'CRITICAL',lblCatHigh:'HIGH',lblCatMod:'MODERATE',lblPriHigh:'HIGH',lblPriMed:'MEDIUM',lblPriLow:'LOW',lblPriOntrack:'On Track',daysLow:30,daysMed:60,daysOver:90,lblDaysLow:'LOW',lblDaysMed:'MEDIUM',lblDaysOk:'ADEQUATE',lblDaysOver:'OVERSTOCK'};svSet();document.documentElement.style.removeProperty('--accent');setTheme('dark');renderAll();showN('✓ Reset');closeM('adm-modal');}
 
 function openM(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
@@ -1493,7 +2017,15 @@ function renderKPIs(data){
   const kpiDaysEl=document.getElementById('kpi-days');
   if(kpiDaysEl){const u=kpiDaysEl.querySelector('.kpi-unit');if(u)u.remove();kpiDaysEl.textContent=avgStockDays!==null?avgStockDays:'—';const s=document.createElement('span');s.className='kpi-unit';s.textContent=' Days';kpiDaysEl.appendChild(s);}
   const kpiDaysSub=document.getElementById('kpi-days-sub');
-  if(kpiDaysSub){const daysCol=avgStockDays!==null?(avgStockDays>90?'#ff4757':avgStockDays>60?'#ff9500':'#00ff88'):'#7addb0';kpiDaysSub.style.color=daysCol;kpiDaysSub.style.background=daysCol+'18';kpiDaysSub.textContent=avgStockDays!==null?(avgStockDays>90?'⚠ Overstocked':avgStockDays>60?'Adequate':'⚡ Low Stock'):'No Avg Data';}
+  if(kpiDaysSub){
+    let daysLbl,daysClr;
+    if(avgStockDays===null){daysLbl='No Avg Data';daysClr='#7addb0';}
+    else if(avgStockDays>=settings.daysOver){daysLbl='⚠ '+settings.lblDaysOver;daysClr='#a855f7';}
+    else if(avgStockDays>=settings.daysMed){daysLbl='✓ '+settings.lblDaysOk;daysClr='#00d4ff';}
+    else if(avgStockDays>=settings.daysLow){daysLbl='⚡ '+settings.lblDaysMed;daysClr='#ff9500';}
+    else{daysLbl='🔴 '+settings.lblDaysLow;daysClr='#ff4757';}
+    kpiDaysSub.style.color=daysClr;kpiDaysSub.style.background=daysClr+'18';kpiDaysSub.textContent=daysLbl;
+  }
 
   // KPI Card — Projected Closing (Closing + Invoice - MTD Sales)
   let totalProj=0,totalProjMtd=0;
@@ -1566,7 +2098,7 @@ const REPORT_DEFS = {
       d.distributor, d.teams,
       o.units?fmt(d.planned):'—', o.units?fmt(d.invoiced):'—', o.units?fmt(d.planned-d.invoiced):'—',
       o.pct?fP(d.pct):'—', o.value?'PKR '+fmt(d.due):'—',
-      d.pct===null?'N/A':d.pct>=settings.tG?'On Track':d.pct>=settings.tO?'Warning':'Critical'
+      d.pct===null?'N/A':d.pct>=settings.tG?settings.lblPriOntrack:d.pct>=settings.tO?'Warning':settings.lblCatCrit
     ])
   },
   'due-amount':{
@@ -1577,7 +2109,7 @@ const REPORT_DEFS = {
       o.value?'PKR '+fmt(r.price):'—',
       o.units?fmt(tgt(r)):'—', o.units?fmt(r.invoice):'—', o.units?fmt(rem(r)):'—',
       o.value?'PKR '+fmt(dv(r)):'—',
-      (rPct(r)||0)<settings.tO?'HIGH':(rPct(r)||0)<settings.tG?'MEDIUM':'LOW'
+      (rPct(r)||0)<settings.tO?settings.lblPriHigh:(rPct(r)||0)<settings.tG?settings.lblPriMed:settings.lblPriLow
     ])
   },
   'slow-moving':{
@@ -1588,7 +2120,7 @@ const REPORT_DEFS = {
       return[r.product,r.distributor,r.team,
         o.units?fmt(r.closingStock):'—', o.units?fmt(r.monthly):'—', o.units?fmt(tgt(r)):'—',
         o.units?fmt(exS(r)):'—', o.value?'PKR '+fmt(exS(r)*r.price):'—',
-        ratio>4?'CRITICAL':ratio>2.5?'HIGH':'MODERATE'];
+        ratio>settings.smCrit?settings.lblCatCrit:ratio>settings.smHigh?settings.lblCatHigh:settings.lblCatMod];
     })
   },
   'team-performance':{
@@ -1640,7 +2172,7 @@ const REPORT_DEFS = {
         o.units?fmt(pc):'—',
         pd!==null?pd+' days':'—',
         o.units?fmt(r.mtdSales||0):'—',
-        sd!==null?(sd>90?'OVERSTOCKED':sd>60?'ADEQUATE':sd>30?'LOW':'CRITICAL'):'—'];
+        sd!==null?(sd>=settings.daysOver?settings.lblDaysOver:sd>=settings.daysMed?settings.lblDaysOk:sd>=settings.daysLow?settings.lblDaysMed:settings.lblDaysLow):'—'];
     })
   },
   'product-master':{
@@ -1662,11 +2194,11 @@ const REPORT_DEFS = {
       data.forEach(r=>{if(!dm[r.distributor])dm[r.distributor]={dist:r.distributor,team:r.team,p:0,i:0,due:0};dm[r.distributor].p+=tgt(r);dm[r.distributor].i+=r.invoice;dm[r.distributor].due+=dv(r);});
       return Object.values(dm).sort((a,b)=>b.due-a.due).map((d,i)=>{
         const p=d.p>0?(d.i/d.p)*100:null;
-        const pri=p===null?'N/A':p<settings.tO?'HIGH':p<settings.tG?'MEDIUM':'LOW';
+        const pri=p===null?'N/A':p<settings.tO?settings.lblPriHigh:p<settings.tG?settings.lblPriMed:settings.lblPriLow;
         return[pri, d.dist, d.team,
           o.pct?fP(p):'—', o.value?'PKR '+fmt(d.due):'—', o.units?fmt(d.p-d.i):'—',
           p<settings.tO?'Call + Visit':'Send Reminder',
-          p<settings.tO?'Immediate follow-up needed':p<settings.tG?'Schedule meeting':'On track — monitor'];
+          p<settings.tO?'Immediate follow-up needed':p<settings.tG?'Schedule meeting':settings.lblPriOntrack+' — monitor'];
       });
     }
   },
